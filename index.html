@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Math Prep — Grade 10 (Taiwan 高一)</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3B2A20">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Math Prep">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ice:#FBF6EE;--ice2:#FFFFFF;--ink:#3B2A20;--ink2:#7A6455;--blue:#C2502D;--red:#B23A48;--gold:#E3A72F;--green:#4F8A4B;--line:#E8D9C6;
+  color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ice:#1E1712;--ice2:#2A211B;--ink:#F5ECE1;--ink2:#C2AE9C;--blue:#E2734D;--red:#F0506A;--gold:#F2B33D;--green:#7FB27D;--line:#45362B;color-scheme:dark}}
+:root[data-theme="dark"]{--ice:#1E1712;--ice2:#2A211B;--ink:#F5ECE1;--ink2:#C2AE9C;--blue:#E2734D;--red:#F0506A;--gold:#F2B33D;--green:#7FB27D;--line:#45362B;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background-color:var(--ice);background-image:linear-gradient(90deg,rgba(194,80,45,.05) 50%,transparent 50%),linear-gradient(rgba(194,80,45,.05) 50%,transparent 50%);background-size:28px 28px;color:var(--ink);font-family:"Barlow",system-ui,-apple-system,sans-serif;font-size:17px;line-height:1.45;display:flex;flex-direction:column}
+.disp{font-family:"Barlow Condensed","Barlow",system-ui,sans-serif;font-weight:800;letter-spacing:.01em}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+input,select{font:inherit;color:var(--ink);background:var(--ice2);border:2px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+
+/* scoreboard */
+.board{background:var(--ink);color:#fff;padding:12px 14px 10px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+:root[data-theme="dark"] .board{background:#140F0B}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .board{background:#140F0B}}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--ink)}
+.cell{text-align:center}
+.cell .n{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:34px;line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
+.cell .n.red{color:#FF5C70}.cell .n.white{color:#fff}
+.cell .l{font-size:12px;opacity:.75;margin-top:2px}
+
+main{flex:1;max-width:620px;width:100%;margin:0 auto;padding:16px 16px 90px}
+h1,h2,h3{font-family:"Barlow Condensed",sans-serif;font-weight:800;line-height:1.05;margin:0}
+h1{font-size:40px}h2{font-size:28px}h3{font-size:22px}
+p{margin:.4em 0}
+.muted{color:var(--ink2)}
+.rink{border-top:4px solid var(--red);padding-top:12px;margin-top:22px}
+.blueline{border-top:3px solid var(--blue);padding-top:10px;margin-top:16px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--blue);color:#fff;border-radius:10px;padding:14px 18px;font-weight:600;font-size:18px;width:100%}
+.btn.red{background:var(--red)}.btn.gold{background:var(--gold);color:#1a1200}.btn.ghost{background:transparent;border:2px solid var(--line);color:var(--ink)}
+.btn.sm{width:auto;padding:8px 14px;font-size:15px}
+.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+
+/* tabs */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--ice2);border-top:2px solid var(--line);display:flex;z-index:5;padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs button{flex:1;padding:12px 4px 10px;font-size:13px;color:var(--ink2);display:flex;flex-direction:column;align-items:center;gap:2px}
+nav.tabs button .ic{font-size:20px}
+nav.tabs button.on{color:var(--blue);font-weight:600}
+
+/* cards */
+.wcard{background:var(--ice2);border:2px solid var(--line);border-radius:14px;padding:18px}
+.word{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:44px;line-height:1}
+.pos{color:var(--ink2);font-style:italic;margin-left:6px;font-size:16px}
+.sent{margin-top:14px;font-size:19px}
+.sent b{color:var(--blue)}
+.zh{color:var(--ink2)}
+.opts{display:grid;gap:10px;margin-top:14px}
+.opt{text-align:left;background:var(--ice2);border:2px solid var(--line);border-radius:10px;padding:14px;font-size:18px;display:flex;gap:10px;align-items:center}
+.opt .k{font-family:"Barlow Condensed",sans-serif;font-weight:800;color:var(--ink2);width:22px}
+.opt.ok{border-color:var(--green);background:color-mix(in srgb,var(--green) 14%,var(--ice2))}
+.opt.bad{border-color:var(--red);background:color-mix(in srgb,var(--red) 12%,var(--ice2))}
+.opt:disabled{cursor:default}
+.prog{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin:6px 0 14px}
+.prog i{display:block;height:100%;background:var(--blue);transition:width .25s}
+.fb{margin-top:12px;padding:12px;border-radius:10px;background:var(--ice2);border-left:5px solid var(--green)}
+.fb.bad{border-left-color:var(--red)}
+.xp-pop{position:fixed;left:50%;top:40%;transform:translateX(-50%);font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:46px;color:var(--gold);pointer-events:none;animation:pop .9s ease-out forwards;z-index:20;text-shadow:0 2px 0 rgba(0,0,0,.25)}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,10px)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-50px)}}
+@media (prefers-reduced-motion:reduce){.xp-pop{animation:none;opacity:0}.prog i{transition:none}}
+
+.stat{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
+.stat .v{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:24px}
+.boxes{display:flex;gap:4px;align-items:flex-end;height:70px;margin:10px 0}
+.boxes div{flex:1;background:var(--blue);border-radius:4px 4px 0 0;min-height:3px;position:relative}
+.boxes div span{position:absolute;top:-20px;left:0;right:0;text-align:center;font-size:12px;color:var(--ink2)}
+.boxes div.m{background:var(--green)}
+.blab{display:flex;gap:4px;font-size:11px;color:var(--ink2)}.blab span{flex:1;text-align:center}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:8px}
+.badge{border:2px solid var(--line);border-radius:10px;padding:10px;font-size:14px}
+.badge.got{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 14%,var(--ice2))}
+.badge .e{font-size:22px}
+.wl{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);text-align:left;width:100%}
+.pill{font-size:12px;padding:2px 8px;border-radius:99px;border:1.5px solid var(--line);color:var(--ink2);white-space:nowrap}
+.pill.b4,.pill.b5{border-color:var(--green);color:var(--green)}.pill.due{border-color:var(--red);color:var(--red)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.chip{border:2px solid var(--line);border-radius:99px;padding:6px 12px;font-size:14px}.chip.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.phase{display:grid;grid-template-columns:70px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.phase .w{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:20px;color:var(--blue)}
+.phase.now .w{color:var(--red)}
+.lvl{display:flex;align-items:center;gap:12px}
+.lvl .ring{width:64px;height:64px;border-radius:50%;background:conic-gradient(var(--gold) var(--p),var(--line) 0);display:grid;place-items:center}
+.lvl .ring i{width:50px;height:50px;border-radius:50%;background:var(--ice2);display:grid;place-items:center;font-style:normal;font-size:26px}
+.modal{position:fixed;inset:0;background:rgba(5,15,30,.6);display:grid;place-items:center;z-index:30;padding:20px}
+.modal>div{background:var(--ice2);border-radius:14px;padding:22px;max-width:420px;width:100%}
+.hidden{display:none}
+.kb{font-size:13px;color:var(--ink2);margin-top:6px}
+.timer{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:40px;color:var(--red)}
+label.f{display:block;margin:12px 0 4px;font-weight:600;font-size:15px}
+.tog{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.sw{width:48px;height:28px;border-radius:14px;background:var(--line);position:relative}.sw.on{background:var(--green)}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .15s}.sw.on::after{left:23px}
+.spk{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:var(--ice2);font-size:16px;vertical-align:middle;margin-left:8px;flex:none}.spk:active{background:var(--line)}.spk.big{width:42px;height:42px;font-size:20px}
+.note{font-size:14px;color:var(--ink2);border:1.5px dashed var(--line);border-radius:10px;padding:10px;margin-top:10px}
+
+.qtext{white-space:pre-line;font-size:21px;line-height:1.45;margin:0;font-variant-numeric:tabular-nums}
+.wcard.q{padding:20px 16px}
+.ans{margin:12px auto 8px;max-width:280px;text-align:center;font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:40px;border-bottom:4px solid var(--blue);min-height:54px}
+.ans.ok{border-color:var(--green);color:var(--green)}.ans.bad{border-color:var(--red);color:var(--red)}
+.kp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:380px;margin:0 auto}
+.key{background:var(--ice2);border:2px solid var(--line);border-radius:12px;padding:13px 0;font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:26px;touch-action:manipulation}
+.key.op{color:var(--blue)}.key.w2{grid-column:span 2}.key:active{background:var(--line)}
+.btn.go{max-width:380px;display:flex;margin:10px auto 0}
+.hint{background:color-mix(in srgb,var(--gold) 16%,var(--ice2));border-left:5px solid var(--gold);border-radius:8px;padding:10px 12px;font-size:16px}
+.ex{margin-top:14px;padding:12px;border:1.5px dashed var(--line);border-radius:10px}
+.unit{display:block;width:100%;text-align:left;padding:12px 0;border-bottom:1px solid var(--line)}
+.bar{height:10px;background:var(--line);border-radius:5px;overflow:hidden;display:flex;margin-top:6px}.bar i{display:block;height:100%;background:var(--green)}.bar i.s{background:color-mix(in srgb,var(--blue) 40%,var(--line))}
+.fb{white-space:pre-line}
+</style>
+</head>
+<body>
+<header class="board" aria-label="Scoreboard">
+  <div class="cell"><div class="n" id="sbStreak">0</div><div class="l">day streak</div></div>
+  <div class="cell"><div class="n white" id="sbXP">0</div><div class="l">XP</div></div>
+  <div class="cell"><div class="n red" id="sbDue">0</div><div class="l">due today</div></div>
+  <div class="cell"><div class="n white" id="sbM">0</div><div class="l">mastered</div></div>
+</header>
+<main id="main"></main>
+<nav class="tabs" aria-label="Sections">
+  <button data-t="today" class="on"><span class="ic">🍳</span>Today</button>
+  <button data-t="skills"><span class="ic">📒</span>Skills</button>
+  <button data-t="plan"><span class="ic">⏲️</span>Plan</button>
+  <button data-t="stats"><span class="ic">🍰</span>Stats</button>
+  <button data-t="settings"><span class="ic">🧂</span>Setup</button>
+</nav>
+<div id="modal" class="modal hidden"></div>
+<script>
+// ===== Math Prep skill bank: Taiwan 108-curriculum Grade 10 (高一) + middle-school foundations =====
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const nz=(a,b)=>{let v;do{v=rnd(a,b)}while(v===0);return v};
+const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b]}return a||1};
+function F(n,d=1){if(d<0){n=-n;d=-d}const g=gcd(n,d);return{n:n/g,d:d/g}}
+const neg=n=>n<0?"−"+(-n):String(n);
+function fs(f){if(typeof f==="number")return neg(f);return f.d===1?neg(f.n):neg(f.n)+"/"+f.d}
+const fact=n=>n<=1?1:n*fact(n-1);
+const C=(n,k)=>k<0||k>n?0:fact(n)/(fact(k)*fact(n-k));
+const P=(n,k)=>fact(n)/fact(n-k);
+// write a polynomial from coefficients [a_n,...,a_0]
+function poly(cs,v="x"){const n=cs.length-1;let s="";cs.forEach((c,i)=>{if(c===0)return;const p=n-i;const a=Math.abs(c);
+  const coef=(a===1&&p>0)?"":String(a);const varp=p===0?"":p===1?v:v+(p===2?"²":p===3?"³":"^"+p);
+  s+=(s===""?(c<0?"−":""):(c<0?" − ":" + "))+coef+varp});return s||"0"}
+const tm=(c,v)=>(c<0?"−":"")+(Math.abs(c)===1?"":Math.abs(c))+v;
+const xm=v=>v<0?"x + "+(-v):"x − "+v;
+const sgn=(n)=>n<0?" − "+(-n):" + "+n;   // "+ 3" / "− 3"
+const par=n=>n<0?"("+neg(n)+")":String(n);
+
+const UNITS=[
+ ["pre","Middle-school foundations","國中先備","Before 高一"],
+ ["num","Numbers & expressions","數與式","高一上"],
+ ["line","Lines & circles","直線與圓","高一上"],
+ ["poly","Polynomial functions","多項式函數","高一上"],
+ ["seq","Sequences & series","數列與級數","高一下"],
+ ["stat","Data analysis","數據分析","高一下"],
+ ["count","Counting","排列組合","高一下"],
+ ["prob","Probability","機率","高一下"]];
+
+// each skill: k, u, name, idea (shown on learn card), gen() -> {text, ans (number|{n,d}), sol}
+const SKILLS=[
+// ---------- foundations ----------
+{k:"pre:lin",u:"pre",name:"Linear equations",idea:"Move x-terms to one side and numbers to the other, then divide.",gen(){
+  const x=rnd(-9,9);let a=rnd(2,9),c;do{c=rnd(1,9)}while(c===a);const b=rnd(-12,12),d=a*x+b-c*x;
+  return{text:`Solve for x:  ${a}x${sgn(b)} = ${c}x${sgn(d)}`,ans:x,sol:`${a}x − ${c}x = ${neg(d)} − ${par(b)} → ${tm(a-c,"x")} = ${neg(d-b)} → x = ${neg(x)}`}}},
+{k:"pre:sys",u:"pre",name:"Systems of two equations",idea:"Eliminate one variable by adding or subtracting multiples of the equations.",gen(){
+  const x=rnd(-6,6),y=rnd(-6,6);let a1,b1,a2,b2;do{a1=nz(-5,5);b1=nz(-5,5);a2=nz(-5,5);b2=nz(-5,5)}while(a1*b2-a2*b1===0);
+  const e=(a,b,c)=>`${tm(a,"x")}${b<0?" − ":" + "}${Math.abs(b)===1?"":Math.abs(b)}y = ${neg(c)}`;
+  return{text:`Solve:\n${e(a1,b1,a1*x+b1*y)}\n${e(a2,b2,a2*x+b2*y)}\nWhat is x + y?`,ans:x+y,sol:`Eliminating one variable gives x = ${neg(x)}, y = ${neg(y)}, so x + y = ${neg(x+y)}.`}}},
+{k:"pre:quad",u:"pre",name:"Solving quadratics by factoring",idea:"Write x² + bx + c as (x − r)(x − s): r + s = −b and rs = c.",gen(){
+  let r,s;do{r=rnd(-9,9);s=rnd(-9,9)}while(r===s);const big=Math.max(r,s);
+  return{text:`${poly([1,-(r+s),r*s])} = 0\nWhat is the larger root?`,ans:big,sol:`${poly([1,-(r+s),r*s])} = (x ${r<0?"+ "+(-r):"− "+r})(x ${s<0?"+ "+(-s):"− "+s}), so x = ${neg(r)} or ${neg(s)}. Larger: ${neg(big)}.`}}},
+{k:"pre:pyth",u:"pre",name:"Pythagorean theorem",idea:"In a right triangle, a² + b² = c², where c is the hypotenuse.",gen(){
+  const t=pick([[3,4,5],[5,12,13],[8,15,17],[7,24,25]]),m=rnd(1,4);const[a,b,c]=t.map(v=>v*m);
+  if(Math.random()<.5)return{text:`A right triangle has legs ${a} and ${b}. How long is the hypotenuse?`,ans:c,sol:`√(${a}² + ${b}²) = √${a*a+b*b} = ${c}`};
+  return{text:`A right triangle has hypotenuse ${c} and one leg ${a}. How long is the other leg?`,ans:b,sol:`√(${c}² − ${a}²) = √${c*c-a*a} = ${b}`}}},
+{k:"pre:exp",u:"pre",name:"Exponent rules",idea:"aᵐ·aⁿ = aᵐ⁺ⁿ,  aᵐ ÷ aⁿ = aᵐ⁻ⁿ,  (aᵐ)ⁿ = aᵐⁿ,  a⁰ = 1.",gen(){
+  const a=rnd(2,7),b=rnd(2,6),c=rnd(1,9),e=rnd(2,3);
+  if(Math.random()<.5)return{text:`2^${a} × 2^${b} ÷ 2^${c} = 2^n.  n = ?`,ans:a+b-c,sol:`${a} + ${b} − ${c} = ${neg(a+b-c)}`};
+  return{text:`(x^${a})^${e} × x^${b} = x^n.  n = ?`,ans:a*e+b,sol:`${a}·${e} + ${b} = ${a*e+b}`}}},
+// ---------- 數與式 ----------
+{k:"num:abs",u:"num",name:"Absolute value",idea:"|x − a| is the distance from x to a.  |x − a| ≤ b means a − b ≤ x ≤ a + b.",gen(){
+  const a=rnd(-6,6),b=rnd(1,7);
+  if(Math.random()<.5)return{text:`How many integers x satisfy |x ${a<0?"+ "+(-a):"− "+a}| ≤ ${b}?`,ans:2*b+1,sol:`${neg(a-b)} ≤ x ≤ ${neg(a+b)}: that is ${2*b+1} integers.`};
+  return{text:`|x ${a<0?"+ "+(-a):"− "+a}| = ${b}. What is the sum of all solutions?`,ans:2*a,sol:`x = ${neg(a)} ± ${b}: ${neg(a-b)} and ${neg(a+b)}, sum ${neg(2*a)}.`}}},
+{k:"num:rad",u:"num",name:"Simplifying radicals",idea:"Pull out perfect-square factors: √(k²·m) = k√m.",gen(){
+  const m=pick([2,3,5,6,7,10]),k=rnd(2,7),n=k*k*m;
+  return{text:`Write √${n} as a√b with b as small as possible. What is a + b?`,ans:k+m,sol:`√${n} = √(${k*k}·${m}) = ${k}√${m}, so a + b = ${k+m}.`}}},
+{k:"num:ration",u:"num",name:"Rationalizing denominators",idea:"Multiply by the conjugate: (√a + √b)(√a − √b) = a − b.",gen(){
+  let p,q;do{p=rnd(3,15);q=rnd(2,p-1)}while(Number.isInteger(Math.sqrt(p))||Number.isInteger(Math.sqrt(q)));
+  if(Math.random()<.5)return{text:`(√${p} + √${q})(√${p} − √${q}) = ?`,ans:p-q,sol:`(√${p})² − (√${q})² = ${p} − ${q} = ${p-q}`};
+  return{text:`1 ⁄ (√${p} − √${q}) = (√${p} + √${q}) ⁄ k.  k = ?`,ans:p-q,sol:`Multiply top and bottom by √${p} + √${q}: the bottom becomes ${p} − ${q} = ${p-q}.`}}},
+{k:"num:ident",u:"num",name:"Multiplication formulas",idea:"x² + y² = (x + y)² − 2xy,  (x − y)² = (x + y)² − 4xy,  x³ + y³ = (x + y)³ − 3xy(x + y).",gen(){
+  const s=rnd(-6,8),p=rnd(-6,8),t=rnd(0,2);
+  if(t===0)return{text:`x + y = ${neg(s)} and xy = ${neg(p)}. Find x² + y².`,ans:s*s-2*p,sol:`(x + y)² − 2xy = ${s*s} − ${par(2*p)} = ${neg(s*s-2*p)}`};
+  if(t===1)return{text:`x + y = ${neg(s)} and xy = ${neg(p)}. Find (x − y)².`,ans:s*s-4*p,sol:`(x + y)² − 4xy = ${s*s} − ${par(4*p)} = ${neg(s*s-4*p)}`};
+  return{text:`x + y = ${neg(s)} and xy = ${neg(p)}. Find x³ + y³.`,ans:s**3-3*p*s,sol:`(x + y)³ − 3xy(x + y) = ${neg(s**3)} − 3·${par(p)}·${par(s)} = ${neg(s**3-3*p*s)}`}}},
+{k:"num:divpt",u:"num",name:"Division points on a number line",idea:"P divides AB internally in ratio m : n  →  P = (n·A + m·B) ⁄ (m + n).",gen(){
+  const A=rnd(-10,4),B=rnd(A+3,14),m=rnd(1,4),n=rnd(1,4);const ans=F(n*A+m*B,m+n);
+  return{text:`A = ${neg(A)} and B = ${neg(B)} on a number line. P is on AB with AP : PB = ${m} : ${n}. What is P?`,ans,sol:`(${n}·${par(A)} + ${m}·${par(B)}) ⁄ ${m+n} = ${neg(n*A+m*B)} ⁄ ${m+n} = ${fs(ans)}`}}},
+// ---------- 直線與圓 ----------
+{k:"line:slope",u:"line",name:"Slope",idea:"Slope through (x₁, y₁) and (x₂, y₂) = (y₂ − y₁) ⁄ (x₂ − x₁).",gen(){
+  let x1,x2;do{x1=rnd(-6,6);x2=rnd(-6,6)}while(x1===x2);const y1=rnd(-8,8),y2=rnd(-8,8),ans=F(y2-y1,x2-x1);
+  return{text:`What is the slope of the line through (${neg(x1)}, ${neg(y1)}) and (${neg(x2)}, ${neg(y2)})?`,ans,sol:`(${neg(y2)} − ${par(y1)}) ⁄ (${neg(x2)} − ${par(x1)}) = ${neg(y2-y1)} ⁄ ${neg(x2-x1)} = ${fs(ans)}`}}},
+{k:"line:eq",u:"line",name:"Equation of a line",idea:"Point-slope form: y − y₀ = m(x − x₀). The y-intercept is where x = 0.",gen(){
+  const q=pick([1,1,2,3]),p=nz(-6,6),x0=rnd(-5,5),y0=rnd(-6,6);const m=F(p,q);const b=F(y0*q-p*x0,q);
+  return{text:`A line has slope ${fs(m)} and passes through (${neg(x0)}, ${neg(y0)}). What is its y-intercept?`,ans:b,sol:`b = y₀ − m·x₀ = ${neg(y0)} − (${fs(m)})·${par(x0)} = ${fs(b)}`}}},
+{k:"line:perp",u:"line",name:"Parallel and perpendicular lines",idea:"Line ax + by + c = 0 has slope −a ⁄ b. Parallel: same slope. Perpendicular: slopes multiply to −1.",gen(){
+  const a=nz(-6,6),b=nz(-6,6),c=rnd(-9,9);const L=`${tm(a,"x")}${b<0?" − ":" + "}${Math.abs(b)===1?"":Math.abs(b)}y${c===0?"":sgn(c)} = 0`;const m=F(-a,b);
+  if(Math.random()<.5)return{text:`What is the slope of a line perpendicular to ${L}?`,ans:F(b,a),sol:`Slope of the line = ${fs(m)}. Perpendicular slope = −1 ⁄ (${fs(m)}) = ${fs(F(b,a))}`};
+  return{text:`What is the slope of a line parallel to ${L}?`,ans:m,sol:`Slope = −a ⁄ b = ${fs(m)}`}}},
+{k:"line:dist",u:"line",name:"Distance from a point to a line",idea:"Distance from (x₀, y₀) to ax + by + c = 0 is |ax₀ + by₀ + c| ⁄ √(a² + b²).",gen(){
+  const [a0,b0,r]=pick([[3,4,5],[4,3,5],[5,12,13],[12,5,13],[6,8,10],[8,6,10]]);const a=a0*pick([1,-1]),b=b0*pick([1,-1]);const x0=rnd(-4,4),y0=rnd(-4,4),D=rnd(1,5);
+  const c=D*r*pick([1,-1])-a*x0-b*y0;const L=`${tm(a,"x")}${b<0?" − ":" + "}${Math.abs(b)}y${c===0?"":sgn(c)} = 0`;
+  return{text:`Find the distance from (${neg(x0)}, ${neg(y0)}) to the line ${L}.`,ans:D,sol:`|${par(a)}·${par(x0)} + ${par(b)}·${par(y0)} + ${par(c)}| ⁄ √(${a*a} + ${b*b}) = ${Math.abs(a*x0+b*y0+c)} ⁄ ${r} = ${D}`}}},
+{k:"line:circ",u:"line",name:"Equation of a circle",idea:"(x − h)² + (y − k)² = r². From x² + y² + Dx + Ey + F = 0, complete the square: center (−D⁄2, −E⁄2).",gen(){
+  const h=rnd(-5,5),k=rnd(-5,5),r=rnd(1,7);const D=-2*h,E=-2*k,Fc=h*h+k*k-r*r;
+  const eq=`x² + y²${D?sgn(D)+"x":""}${E?sgn(E)+"y":""}${Fc?sgn(Fc):""} = 0`;
+  if(Math.random()<.5)return{text:`${eq}\nWhat is the radius?`,ans:r,sol:`(x ${h<0?"+ "+(-h):"− "+h})² + (y ${k<0?"+ "+(-k):"− "+k})² = ${h*h+k*k-Fc} → r = ${r}`};
+  return{text:`${eq}\nThe center is (h, k). What is h + k?`,ans:h+k,sol:`Center = (−D⁄2, −E⁄2) = (${neg(h)}, ${neg(k)}), so h + k = ${neg(h+k)}`}}},
+{k:"line:lc",u:"line",name:"Line and circle",idea:"Compare the distance d from the center to the line with r: d < r → 2 points, d = r → 1 (tangent), d > r → 0.",gen(){
+  const h=rnd(-4,4),k=rnd(-4,4),r=rnd(2,6);const [a0,b0,n]=pick([[3,4,5],[4,3,5]]);const a=a0,b=b0*pick([1,-1]);
+  const D=pick([r-1,r,r+1,r+2,Math.max(0,r-2)]);const c=D*n-a*h-b*k;const pts=D<r?2:D===r?1:0;
+  return{text:`Circle: (x ${h<0?"+ "+(-h):"− "+h})² + (y ${k<0?"+ "+(-k):"− "+k})² = ${r*r}\nLine: ${a}x${b<0?" − ":" + "}${Math.abs(b)}y${c===0?"":sgn(c)} = 0\nHow many points do they share?`,ans:pts,sol:`d = |${a}·${par(h)} + ${par(b)}·${par(k)} + ${par(c)}| ⁄ 5 = ${D}, r = ${r} → ${pts} point${pts===1?"":"s"}.`}}},
+// ---------- 多項式函數 ----------
+{k:"poly:rem",u:"poly",name:"Remainder theorem",idea:"The remainder of f(x) ÷ (x − a) is f(a).",gen(){
+  const cs=[nz(-3,3),rnd(-5,5),rnd(-5,5),rnd(-6,6)],a=nz(-3,3);const v=cs[0]*a**3+cs[1]*a*a+cs[2]*a+cs[3];
+  return{text:`f(x) = ${poly(cs)}\nWhat is the remainder when f(x) is divided by x ${a<0?"+ "+(-a):"− "+a}?`,ans:v,sol:`f(${neg(a)}) = ${neg(v)}`}}},
+{k:"poly:factor",u:"poly",name:"Factor theorem",idea:"(x − a) is a factor of f(x) exactly when f(a) = 0.",gen(){
+  const p=rnd(-4,4),q=rnd(-6,6),a=nz(-3,3);const kk=-(a**3+p*a*a+q*a);
+  return{text:`${xm(a)} is a factor of ${poly([1,p,q,0])} + k. What is k?`,ans:kk,sol:`f(${neg(a)}) = ${neg(a**3)} + ${par(p*a*a)} + ${par(q*a)} + k = 0 → k = ${neg(kk)}`}}},
+{k:"poly:vertex",u:"poly",name:"Vertex of a quadratic",idea:"y = ax² + bx + c has its vertex at x = −b ⁄ 2a. If a > 0 that is the minimum.",gen(){
+  const a=pick([1,2,3,-1,-2]),h=rnd(-5,5),k=rnd(-9,9);const cs=[a,-2*a*h,a*h*h+k];
+  if(Math.random()<.5)return{text:`y = ${poly(cs)}\nWhat is the ${a>0?"minimum":"maximum"} value of y?`,ans:k,sol:`Vertex x = −b ⁄ 2a = ${neg(h)}. y(${neg(h)}) = ${neg(k)}`};
+  return{text:`y = ${poly(cs)}\nAt what x is the vertex?`,ans:h,sol:`x = −(${neg(-2*a*h)}) ⁄ (2·${par(a)}) = ${neg(h)}`}}},
+{k:"poly:ineq",u:"poly",name:"Quadratic inequalities",idea:"For (x − r)(x − s) < 0 with r < s, the solution is r < x < s; for > 0 it is outside.",gen(){
+  const r=rnd(-6,3),s=rnd(r+2,r+8);const strict=Math.random()<.5;const cs=[1,-(r+s),r*s];
+  return{text:`How many integers x satisfy ${poly(cs)} ${strict?"<":"≤"} 0?`,ans:strict?s-r-1:s-r+1,sol:`Roots ${neg(r)} and ${neg(s)}; solution ${neg(r)} ${strict?"<":"≤"} x ${strict?"<":"≤"} ${neg(s)} → ${strict?s-r-1:s-r+1} integers.`}}},
+{k:"poly:vieta",u:"poly",name:"Roots and coefficients",idea:"For ax² + bx + c = 0 with roots α, β:  α + β = −b ⁄ a,  αβ = c ⁄ a.",gen(){
+  const a=pick([1,1,2,3]),b=rnd(-8,8),c=nz(-8,8);const S=F(-b,a),Pp=F(c,a);
+  if(Math.random()<.5){const ans=F(b*b-2*a*c,a*a);return{text:`α and β are roots of ${poly([a,b,c])} = 0. Find α² + β².`,ans,sol:`(α + β)² − 2αβ = (${fs(S)})² − 2(${fs(Pp)}) = ${fs(ans)}`}}
+  const ans=F(-b,c);return{text:`α and β are roots of ${poly([a,b,c])} = 0. Find 1⁄α + 1⁄β.`,ans,sol:`(α + β) ⁄ αβ = (${fs(S)}) ⁄ (${fs(Pp)}) = ${fs(ans)}`}}},
+{k:"poly:cubic",u:"poly",name:"Polynomial inequalities",idea:"Mark the roots on a number line; the sign of the product flips at each single root.",gen(){
+  const a=rnd(-5,0),b=rnd(a+2,a+4),c=rnd(b+2,b+5);const L=a-3,R=c+3;const cnt=(a-L)+(c-b-1);
+  return{text:`(${xm(a)})(${xm(b)})(${xm(c)}) < 0\nHow many integers x from ${neg(L)} to ${R} satisfy it?`,ans:cnt,sol:`Negative when x < ${neg(a)} or ${neg(b)} < x < ${neg(c)}. Integers: ${a-L} + ${c-b-1} = ${cnt}`}}},
+// ---------- 數列與級數 ----------
+{k:"seq:an",u:"seq",name:"Arithmetic sequences",idea:"aₙ = a₁ + (n − 1)d.",gen(){
+  const a=rnd(-10,15),d=nz(-6,7),n=rnd(8,30);return{text:`An arithmetic sequence has a₁ = ${neg(a)} and common difference ${neg(d)}. What is a${sub(n)}?`,ans:a+(n-1)*d,sol:`${neg(a)} + ${n-1}·${par(d)} = ${neg(a+(n-1)*d)}`}}},
+{k:"seq:sn",u:"seq",name:"Arithmetic series",idea:"Sₙ = n(a₁ + aₙ) ⁄ 2.",gen(){
+  const a=rnd(-5,12),d=nz(-3,5),n=rnd(6,20);const an=a+(n-1)*d,S=n*(a+an)/2;
+  return{text:`Find the sum of the first ${n} terms of the arithmetic sequence ${neg(a)}, ${neg(a+d)}, ${neg(a+2*d)}, …`,ans:S,sol:`a${sub(n)} = ${neg(an)}. S = ${n}(${neg(a)} + ${par(an)}) ⁄ 2 = ${neg(S)}`}}},
+{k:"seq:gn",u:"seq",name:"Geometric sequences",idea:"aₙ = a₁ · rⁿ⁻¹.",gen(){
+  const a=pick([1,2,3,-1,-2,5]),r=pick([2,3,-2,-3]),n=rnd(4,7);return{text:`A geometric sequence has a₁ = ${neg(a)} and ratio ${neg(r)}. What is a${sub(n)}?`,ans:a*r**(n-1),sol:`${neg(a)} · ${par(r)}^${n-1} = ${neg(a*r**(n-1))}`}}},
+{k:"seq:gs",u:"seq",name:"Geometric series",idea:"Sₙ = a₁(rⁿ − 1) ⁄ (r − 1), for r ≠ 1.",gen(){
+  const a=pick([1,2,3,5]),r=pick([2,3]),n=rnd(4,7);const S=a*(r**n-1)/(r-1);
+  return{text:`Find ${a} + ${a*r} + ${a*r*r} + … (${n} terms).`,ans:S,sol:`${a}(${r}^${n} − 1) ⁄ (${r} − 1) = ${S}`}}},
+{k:"seq:sigma",u:"seq",name:"Sigma notation",idea:"Σk = n(n + 1) ⁄ 2,  Σk² = n(n + 1)(2n + 1) ⁄ 6,  Σc = cn.",gen(){
+  const n=rnd(5,12);if(Math.random()<.5){const a=nz(-4,5),b=rnd(-6,6);const S=a*n*(n+1)/2+b*n;return{text:`Σ (k = 1 to ${n}) of (${poly([a,b],"k")})`,ans:S,sol:`${a}·${n*(n+1)/2} + ${par(b)}·${n} = ${neg(S)}`}}
+  const S=n*(n+1)*(2*n+1)/6;return{text:`Σ (k = 1 to ${n}) of k²`,ans:S,sol:`${n}·${n+1}·${2*n+1} ⁄ 6 = ${S}`}}},
+{k:"seq:rec",u:"seq",name:"Recursive sequences",idea:"Build terms one at a time from the rule.",gen(){
+  const a1=rnd(-3,5),t=rnd(0,1);if(t===0){const m=pick([2,3]),c=rnd(-3,3);let v=a1;const steps=[v];for(let i=0;i<4;i++){v=m*v+c;steps.push(v)}
+    return{text:`a₁ = ${neg(a1)},  aₙ₊₁ = ${m}aₙ${c?sgn(c):""}.  What is a₅?`,ans:v,sol:steps.map(neg).join(", ")}}
+  let v=a1;const steps=[v];for(let n=1;n<5;n++){v=v+n;steps.push(v)}return{text:`a₁ = ${neg(a1)},  aₙ₊₁ = aₙ + n.  What is a₅?`,ans:v,sol:steps.map(neg).join(", ")}}},
+// ---------- 數據分析 ----------
+{k:"stat:center",u:"stat",name:"Mean and median",idea:"Mean = sum ⁄ count. Median = middle value after sorting.",gen(){
+  const n=pick([7,9]);const xs=Array.from({length:n},()=>rnd(1,30));
+  if(Math.random()<.5){const s=[...xs].sort((a,b)=>a-b);return{text:`Data: ${xs.join(", ")}\nWhat is the median?`,ans:s[(n-1)/2],sol:`Sorted: ${s.join(", ")} → middle value ${s[(n-1)/2]}`}}
+  const m=rnd(8,20);const sum=xs.slice(0,-1).reduce((a,b)=>a+b,0);let last=m*n-sum;if(last<0||last>60){xs.fill(m);last=m}xs[n-1]=last;
+  return{text:`Data: ${xs.join(", ")}\nWhat is the mean?`,ans:m,sol:`Sum = ${m*n}, count = ${n} → mean ${m}`}}},
+{k:"stat:sd",u:"stat",name:"Standard deviation",idea:"σ = √( Σ(xᵢ − μ)² ⁄ n ). It measures how far data spread from the mean.",gen(){
+  const m=rnd(5,20),d=rnd(1,6),k=rnd(2,4);const xs=[];for(let i=0;i<k;i++){xs.push(m-d,m+d)}xs.sort(()=>Math.random()-.5);
+  return{text:`Data: ${xs.join(", ")}\nWhat is the (population) standard deviation?`,ans:d,sol:`Mean ${m}; every value is ${d} away from it, so σ = √(${d}²) = ${d}`}}},
+{k:"stat:lin",u:"stat",name:"Linear transformations of data",idea:"If y = ax + b: mean(y) = a·mean(x) + b, SD(y) = |a|·SD(x).",gen(){
+  const mu=rnd(40,80),sd=rnd(2,12),a=pick([2,3,-1,-2,5]),b=rnd(-20,20);
+  if(Math.random()<.5)return{text:`Scores x have mean ${mu} and SD ${sd}. New scores y = ${tm(a,"x")}${b?sgn(b):""}. What is the mean of y?`,ans:a*mu+b,sol:`${par(a)}·${mu}${b?sgn(b):""} = ${neg(a*mu+b)}`};
+  return{text:`Scores x have mean ${mu} and SD ${sd}. New scores y = ${tm(a,"x")}${b?sgn(b):""}. What is the SD of y?`,ans:Math.abs(a)*sd,sol:`|${neg(a)}|·${sd} = ${Math.abs(a)*sd} (adding a constant doesn't change spread)`}}},
+{k:"stat:reg",u:"stat",name:"Regression line",idea:"Least-squares line: slope = r · σᵧ ⁄ σₓ, and it passes through (x̄, ȳ).",gen(){
+  const [rn,rd]=pick([[1,2],[3,5],[4,5],[-1,2],[-4,5]]),sx=pick([2,3,4,5]),sy=pick([2,4,6,10]),xm=rnd(2,10),ym=rnd(10,40);const m=F(rn*sy,rd*sx);
+  if(Math.random()<.6)return{text:`r = ${fs(F(rn,rd))}, σₓ = ${sx}, σᵧ = ${sy}. What is the slope of the regression line of y on x?`,ans:m,sol:`${fs(F(rn,rd))} · ${sy} ⁄ ${sx} = ${fs(m)}`};
+  const b=F(ym*m.d-m.n*xm,m.d);return{text:`r = ${fs(F(rn,rd))}, σₓ = ${sx}, σᵧ = ${sy}, x̄ = ${xm}, ȳ = ${ym}. What is the y-intercept of the regression line?`,ans:b,sol:`slope = ${fs(m)}; b = ȳ − slope·x̄ = ${ym} − ${fs(m)}·${xm} = ${fs(b)}`}}},
+// ---------- 排列組合 ----------
+{k:"count:perm",u:"count",name:"Permutations",idea:"Ordered choices: P(n, k) = n! ⁄ (n − k)!.",gen(){
+  const n=rnd(5,9),k=rnd(2,4);return{text:`${n} runners. In how many ways can 1st, 2nd${k>2?", 3rd":""}${k>3?" and 4th":""} place be awarded?`.replace("2nd,","2nd,"),ans:P(n,k),sol:`P(${n}, ${k}) = ${Array.from({length:k},(_,i)=>n-i).join(" × ")} = ${P(n,k)}`}}},
+{k:"count:comb",u:"count",name:"Combinations",idea:"Unordered choices: C(n, k) = n! ⁄ (k!(n − k)!).",gen(){
+  const n=rnd(6,12),k=rnd(2,4);return{text:`In how many ways can a team of ${k} be chosen from ${n} people?`,ans:C(n,k),sol:`C(${n}, ${k}) = ${C(n,k)}`}}},
+{k:"count:rep",u:"count",name:"Arrangements with repeats",idea:"Arrangements of n items with repeats a, b, … = n! ⁄ (a!·b!·…).",gen(){
+  const w=pick(["BANANA","LETTER","PEPPER","COFFEE","SUCCESS","BALLOON","CANADA","TOMATO","ADDED","LEVEL"]);const cnt={};[...w].forEach(c=>cnt[c]=(cnt[c]||0)+1);
+  const rep=Object.values(cnt).filter(v=>v>1);const ans=fact(w.length)/rep.reduce((a,v)=>a*fact(v),1);
+  return{text:`How many different arrangements of the letters in ${w} are there?`,ans,sol:`${w.length}! ⁄ (${rep.map(v=>v+"!").join("·")}) = ${ans}`}}},
+{k:"count:adj",u:"count",name:"Together and apart",idea:"Keep two people together by treating them as one block (×2 for their order). 'Apart' = total − together.",gen(){
+  const n=rnd(5,7),tog=2*fact(n-1);if(Math.random()<.5)return{text:`${n} people stand in a line. A and B must stand next to each other. How many arrangements?`,ans:tog,sol:`Block AB: ${n-1}! · 2 = ${tog}`};
+  return{text:`${n} people stand in a line. A and B must NOT stand next to each other. How many arrangements?`,ans:fact(n)-tog,sol:`${n}! − ${n-1}!·2 = ${fact(n)} − ${tog} = ${fact(n)-tog}`}}},
+{k:"count:grid",u:"count",name:"Grid paths",idea:"Moving only right or up on an m × n grid: choose which m of the m + n steps go right → C(m + n, m).",gen(){
+  const m=rnd(2,6),n=rnd(2,5);return{text:`On a grid, you move only right or up from (0, 0) to (${m}, ${n}). How many shortest paths are there?`,ans:C(m+n,m),sol:`C(${m+n}, ${m}) = ${C(m+n,m)}`}}},
+{k:"count:binom",u:"count",name:"Binomial theorem",idea:"(x + a)ⁿ = Σ C(n, k)·xᵏ·aⁿ⁻ᵏ.",gen(){
+  const n=rnd(4,6),a=pick([1,2,-1,-2,3]),k=rnd(1,n-1);const ans=C(n,k)*a**(n-k);
+  return{text:`What is the coefficient of x${k===1?"":sup(k)} in (x ${a<0?"− "+(-a):"+ "+a})${sup(n)}?`,ans,sol:`C(${n}, ${k})·${par(a)}^${n-k} = ${C(n,k)}·${par(a**(n-k))} = ${neg(ans)}`}}},
+// ---------- 機率 ----------
+{k:"prob:dice",u:"prob",name:"Two dice",idea:"There are 36 equally likely outcomes. Count the ones you want.",gen(){
+  const s=rnd(3,11);let c=0;for(let i=1;i<=6;i++)for(let j=1;j<=6;j++)if(i+j===s)c++;
+  if(Math.random()<.5)return{text:`Two fair dice are rolled. What is the probability the sum is ${s}?`,ans:F(c,36),sol:`${c} outcomes out of 36 = ${fs(F(c,36))}`};
+  let g=0;for(let i=1;i<=6;i++)for(let j=1;j<=6;j++)if(i+j>=s)g++;return{text:`Two fair dice are rolled. What is the probability the sum is at least ${s}?`,ans:F(g,36),sol:`${g} outcomes out of 36 = ${fs(F(g,36))}`}}},
+{k:"prob:balls",u:"prob",name:"Drawing without replacement",idea:"Probability = favourable choices ⁄ all choices, using combinations.",gen(){
+  const r=rnd(2,6),b=rnd(2,6),T=C(r+b,2);
+  if(Math.random()<.5)return{text:`A bag has ${r} red and ${b} blue balls. Two are drawn at once. What is the probability both are red?`,ans:F(C(r,2),T),sol:`C(${r}, 2) ⁄ C(${r+b}, 2) = ${C(r,2)} ⁄ ${T} = ${fs(F(C(r,2),T))}`};
+  return{text:`A bag has ${r} red and ${b} blue balls. Two are drawn at once. What is the probability of one of each color?`,ans:F(r*b,T),sol:`${r}·${b} ⁄ C(${r+b}, 2) = ${r*b} ⁄ ${T} = ${fs(F(r*b,T))}`}}},
+{k:"prob:comp",u:"prob",name:"At least one",idea:"P(at least one) = 1 − P(none).",gen(){
+  if(Math.random()<.5){const n=rnd(2,5);return{text:`A fair coin is flipped ${n} times. What is the probability of at least one head?`,ans:F(2**n-1,2**n),sol:`1 − (1⁄2)^${n} = ${fs(F(2**n-1,2**n))}`}}
+  const n=rnd(2,3);return{text:`A fair die is rolled ${n} times. What is the probability of at least one 6?`,ans:F(6**n-5**n,6**n),sol:`1 − (5⁄6)^${n} = ${fs(F(6**n-5**n,6**n))}`}}},
+{k:"prob:ev",u:"prob",name:"Expected value",idea:"E = Σ (value × probability).",gen(){
+  const k=rnd(1,3),W=rnd(2,10)*5,L=rnd(1,5)*5;const ans=F(k*W-(6-k)*L,6);
+  return{text:`Roll a fair die. If it shows 1${k>1?" to "+k:""}, you win $${W}; otherwise you lose $${L}. What is the expected value (in $)?`,ans,sol:`${k}⁄6·${W} − ${6-k}⁄6·${L} = ${fs(ans)}`}}},
+];
+function sub(n){return String(n).split("").map(c=>"₀₁₂₃₄₅₆₇₈₉"[+c]).join("")}
+function sup(n){return String(n).split("").map(c=>"⁰¹²³⁴⁵⁶⁷⁸⁹"[+c]).join("")}
+const IDX={};SKILLS.forEach((s,i)=>IDX[s.k]=i);
+
+// ===== Math Prep — Taiwan 高一 math practice with spaced repetition =====
+const APP_VERSION="2026-11-02a";
+const KEY="mathprep-v1";
+const DAY=86400000;
+const INTERVALS=[0,1,3,7,14,30];
+const LEVELS=[[0,"Beginner","🥚"],[250,"Learner","🍳"],[600,"Practiced","🥖"],[1200,"Skilled","🥘"],[2200,"Advanced","🍰"],[3600,"Expert","🎂"],[5500,"Master","🧑‍🍳"]];
+const BADGES=[
+ ["first","First session","🥄","Finish your first session"],
+ ["checked","Taste test","🔍","Finish a unit check"],
+ ["s7","7-day streak","🔥","Study 7 days in a row"],
+ ["s21","21-day streak","🌶️","Study 21 days in a row"],
+ ["sem1","高一上 covered","🍱","Every 高一上 skill learned"],
+ ["sem2","高一下 covered","🍽️","Every 高一下 skill learned"],
+ ["m20","20 mastered","🧁","Master 20 skills"],
+ ["perfect","Perfect session","⭐","A session with zero mistakes (8+ questions)"],
+];
+
+// ---------- state ----------
+const todayKey=d=>{d=d||new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const fresh=()=>({v:1,name:"",goal:"2027-06-30",perDay:2,xp:0,streak:0,best:0,last:"",freezeUsed:"",badges:[],w:{},hist:{},check:{},reportUrl:"",pending:false,updated:0});
+let S=fresh();
+function load(){try{const j=localStorage.getItem(KEY);if(j)S=Object.assign(fresh(),JSON.parse(j))}catch(e){}}
+function save(){S.updated=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const ws=k=>S.w[k]||{b:0,d:0,l:0,c:0};
+const mastered=k=>(S.w[k]||{}).b>=4;
+const learned=k=>(S.w[k]||{}).b>=1;
+function dueList(){const now=Date.now();return SKILLS.map(s=>s.k).filter(k=>ws(k).b>0&&ws(k).d<=now)}
+function unseen(){return SKILLS.filter(s=>ws(s.k).b===0).map(s=>s.k)}
+function masteredCount(){return SKILLS.filter(s=>mastered(s.k)).length}
+function grade(k,ok){const x=ws(k);if(ok){x.b=Math.min(5,x.b+1);x.c++}else{x.b=1;x.l++}x.d=Date.now()+INTERVALS[x.b]*DAY;S.w[k]=x}
+function weekKey(){const d=new Date();const o=new Date(d.getFullYear(),0,1);return d.getFullYear()+"w"+Math.floor(((d-o)/DAY+o.getDay())/7)}
+function touchStreak(){const t=todayKey();if(S.last===t)return;const y=todayKey(new Date(Date.now()-DAY)),y2=todayKey(new Date(Date.now()-2*DAY));
+  if(S.last===y)S.streak++;else if(S.last===y2&&S.freezeUsed!==weekKey()){S.streak++;S.freezeUsed=weekKey()}else S.streak=1;S.last=t;S.best=Math.max(S.best,S.streak)}
+function logHist(k,n){const t=todayKey();S.hist[t]=S.hist[t]||{q:0,ok:0,nw:0,xp:0};S.hist[t][k]=(S.hist[t][k]||0)+n}
+function daysToGoal(){return Math.ceil((new Date(S.goal+"T00:00:00")-new Date())/DAY)}
+function level(){let L=LEVELS[0],next=null;for(let i=0;i<LEVELS.length;i++)if(S.xp>=LEVELS[i][0]){L=LEVELS[i];next=LEVELS[i+1]||null}return{L,next}}
+const unitOf=k=>UNITS.find(u=>u[0]===SKILLS[IDX[k]].u);
+const semSkills=sem=>SKILLS.filter(s=>{const u=UNITS.find(x=>x[0]===s.u);return sem==="上"?(u[3]==="高一上"||u[3]==="Before 高一"):u[3]==="高一下"});
+function addBadge(id){if(!S.badges.includes(id)){S.badges.push(id);toast("🏅 "+BADGES.find(b=>b[0]===id)[1])}}
+function checkBadges(){if(S.streak>=7)addBadge("s7");if(S.streak>=21)addBadge("s21");if(masteredCount()>=20)addBadge("m20");
+  if(semSkills("上").every(s=>learned(s.k)))addBadge("sem1");if(semSkills("下").every(s=>learned(s.k)))addBadge("sem2")}
+function pace(){const left=unseen().length,d=daysToGoal(),days=Math.max(1,Math.round((d-14)*6/7));return{left,d,rec:Math.min(6,Math.max(1,Math.ceil(left/days)))}}
+
+// ---------- answers ----------
+function toRat(x){if(typeof x==="number")return{n:x,d:1};return x}
+function parseAns(str){str=str.replace(/−/g,"-").trim();if(!str)return null;
+  if(/^-?\d+\/-?\d+$/.test(str)){const [a,b]=str.split("/").map(Number);if(b===0)return null;return F(a,b)}
+  if(/^-?\d*\.?\d+$/.test(str)){const neg=str.startsWith("-");const t=str.replace("-","");const [i,f=""]=t.split(".");const d=10**f.length;return F((neg?-1:1)*(Number(i||0)*d+Number(f||0)),d)}
+  return null}
+function sameAns(v,ans){const a=toRat(ans);return v&&v.n*a.d===a.n*v.d}
+
+// ---------- parent report ----------
+function summary(){return{name:S.name,xp:S.xp,streak:S.streak,mastered:masteredCount(),seen:SKILLS.filter(s=>learned(s.k)).length,total:SKILLS.length,due:dueList().length,last:S.last}}
+function report(){if(!S.reportUrl)return;const t=todayKey(),h=S.hist[t]||{q:0,ok:0,nw:0,xp:0};
+  const weak=Object.keys(S.w).filter(k=>IDX[k]!==undefined&&S.w[k].l>0&&S.w[k].b<=2).sort((a,b)=>S.w[b].l-S.w[a].l).slice(0,10).map(k=>SKILLS[IDX[k]].name+"("+S.w[k].l+")").join(", ");
+  const body=JSON.stringify(Object.assign(summary(),{date:t,todayQ:h.q,todayAcc:h.q?Math.round(h.ok/h.q*100):"",todayNew:h.nw,todayXP:h.xp,weak,backup:btoa(unescape(encodeURIComponent(JSON.stringify(S))))}));
+  S.pending=true;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  fetch(S.reportUrl,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body}).then(()=>{S.pending=false;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}).catch(()=>{})}
+
+// ---------- UI helpers ----------
+const $=s=>document.querySelector(s);const main=$("#main");let tab="today";let inQuiz=false;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function toast(m){const d=document.createElement("div");d.className="xp-pop";d.style.fontSize="22px";d.style.top="28%";d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),1100)}
+function addXP(n){S.xp+=n;logHist("xp",n);const p=document.createElement("div");p.className="xp-pop";p.textContent="+"+n+" XP";document.body.appendChild(p);setTimeout(()=>p.remove(),900);updateBoard()}
+function updateBoard(){$("#sbStreak").textContent=S.streak;$("#sbXP").textContent=S.xp;$("#sbDue").textContent=dueList().length;$("#sbM").textContent=masteredCount()+"/"+SKILLS.length}
+function render(){inQuiz=false;kpHandler=null;updateBoard();document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===tab));({today:rToday,skills:rSkills,plan:rPlan,stats:rStats,settings:rSettings})[tab]();window.scrollTo(0,0)}
+document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>{if(inQuiz&&!confirm("Leave this session? Answers so far are saved."))return;tab=b.dataset.t;render()});
+const unitTag=u=>`<span class="pill">${esc(u[2])} · ${esc(u[3])}</span>`;
+
+// keypad
+let kpHandler=null,kpVal="";
+function keypadHTML(){const k=["1","2","3","/","4","5","6",".","7","8","9","−"];return `<div class="ans" id="ans">&nbsp;</div><div class="kp">${k.map(x=>`<button class="key${x==="/"||x==="."||x==="−"?" op":""}" data-k="${x}">${x}</button>`).join("")}<button class="key w2" data-k="0">0</button><button class="key w2 op" data-k="⌫">⌫</button></div><button class="btn go" id="goBtn">Check ✓</button><p class="kb" style="text-align:center">Fractions like −3/4 are fine. Decimals work too.</p>`}
+function bindKeypad(onSubmit){kpVal="";kpHandler=onSubmit;const show=()=>{$("#ans").innerHTML=kpVal?esc(kpVal):"&nbsp;"};
+  document.querySelectorAll(".key").forEach(b=>b.onclick=()=>press(b.dataset.k));$("#goBtn").onclick=()=>press("ok");show()}
+function press(k){if(!kpHandler)return;if(k==="ok"){const v=parseAns(kpVal);if(v)kpHandler(v);else if(kpVal)toast("Check the format");return}
+  if(k==="⌫")kpVal=kpVal.slice(0,-1);else if(k==="−"){kpVal=kpVal.startsWith("−")?kpVal.slice(1):"−"+kpVal}else if(kpVal.length<10)kpVal+=k;$("#ans").innerHTML=kpVal?esc(kpVal):"&nbsp;"}
+document.addEventListener("keydown",e=>{if(!kpHandler)return;if(/^[0-9]$/.test(e.key))press(e.key);else if(e.key==="-")press("−");else if(e.key==="/"||e.key===".")press(e.key);else if(e.key==="Backspace")press("⌫");else if(e.key==="Enter"){e.preventDefault();press("ok")}});
+
+function learnCard(k){const s=SKILLS[IDX[k]],u=unitOf(k),ex=s.gen();
+  return `<p class="muted">New skill ${unitTag(u)}</p><h2>${esc(s.name)}</h2><div class="hint" style="margin-top:12px">💡 ${esc(s.idea)}</div>
+  <div class="ex"><p class="muted" style="margin:0 0 4px">Worked example</p><p class="qtext">${esc(ex.text)}</p><p><b>Answer: ${esc(fs(ex.ans))}</b></p><p class="muted">${esc(ex.sol)}</p></div>`}
+
+// ---------- today ----------
+function nextCheckUnit(){return UNITS.find(u=>SKILLS.some(s=>s.u===u[0]&&!S.check[s.k]&&ws(s.k).b===0))}
+function rToday(){const due=dueList(),h=S.hist[todayKey()]||{nw:0},un=unseen();const nNew=Math.min(Math.max(0,S.perDay-(h.nw||0)),un.length);
+  const {L,next}=level();const p=next?Math.round((S.xp-L[0])/(next[0]-L[0])*100):100;const done=due.length===0&&nNew===0;const nc=nextCheckUnit();
+  main.innerHTML=`<div class="lvl"><div class="ring" style="--p:${p}%"><i>${L[2]}</i></div><div><h2>${esc(S.name||"Student")} · ${L[1]}</h2><div class="muted">${next?`${next[0]-S.xp} XP to ${next[1]}`:"Max level"}</div></div></div>
+  ${nc?`<div class="note" style="border-style:solid;border-color:var(--gold)"><b>Unit check: ${esc(nc[1])}</b> <span class="muted">(${esc(nc[2])})</span><br>One question per skill. Skills you get right are marked as known, so practice goes only to the gaps.<button class="btn gold" style="margin-top:10px" id="chkBtn">Start unit check</button></div>`:""}
+  <div class="rink"><h1>${done?"Done for today ✔":"Today’s session"}</h1>
+  <p class="muted">${done?"Reviews are done and new skills are in. Come back tomorrow, or try a bonus round.":`<b>${Math.min(due.length,15)}</b> reviews due · <b>${nNew}</b> new skill${nNew===1?"":"s"} · about ${Math.max(5,Math.ceil(Math.min(due.length,15)*1+nNew*4))} min`}</p>
+  <div class="row" style="margin-top:12px"><button class="btn" id="startBtn" ${done?"disabled":""}>${due.length?"Start reviews + new skills":"Start new skills"}</button>
+  <button class="btn gold" id="bonusBtn" ${SKILLS.filter(s=>learned(s.k)).length<3?"disabled":""}>Bonus round: 5 mixed questions</button>
+  ${done&&un.length?`<button class="btn ghost" id="extraBtn">Learn 1 extra skill</button>`:""}</div></div>
+  <div class="blueline"><h3>How this works</h3><p class="muted" style="font-size:15px">Each skill comes back after 1 → 3 → 7 → 14 → 30 days, with a new problem every time. Right answer: it moves up. Wrong: you see the full solution, try a similar problem, and it comes back tomorrow. No XP is ever taken away.</p></div>`;
+  $("#startBtn").onclick=()=>session(shuffle(due).slice(0,15),un.slice(0,nNew));
+  $("#bonusBtn").onclick=()=>session(shuffle(SKILLS.filter(s=>learned(s.k)).map(s=>s.k)).slice(0,5),[],true);
+  const x=$("#extraBtn");if(x)x.onclick=()=>session([],un.slice(0,1));const c=$("#chkBtn");if(c)c.onclick=()=>unitCheck(nc[0])}
+
+// ---------- session ----------
+function session(dueKeys,newKeys,bonus){inQuiz=true;const queue=[];
+  dueKeys.forEach(k=>queue.push({kind:"q",k}));
+  newKeys.forEach(k=>{queue.push({kind:"learn",k});queue.push({kind:"q",k,isNew:true})});
+  shuffle(newKeys).forEach(k=>queue.push({kind:"q",k,isNew:true,second:true}));
+  let i=0,q=0,ok=0,combo=0,wrongs=[];
+  const step=()=>{if(i>=queue.length)return finish();const it=queue[i];const pct=Math.round(i/queue.length*100);const s=SKILLS[IDX[it.k]];
+    if(it.kind==="learn"){if(ws(it.k).b===0){S.w[it.k]={b:1,d:Date.now()+DAY,l:0,c:0};logHist("nw",1);save()}
+      main.innerHTML=`<div class="prog"><i style="width:${pct}%"></i></div><div class="wcard">${learnCard(it.k)}</div><button class="btn" style="margin-top:12px" id="nx">Got it — let me try</button>`;$("#nx").onclick=()=>{i++;addXP(5);step()};return}
+    const Q=s.gen();
+    main.innerHTML=`<div class="prog"><i style="width:${pct}%"></i></div><p class="muted">${bonus?"Bonus":it.isNew?"New skill":it.retry?"Similar problem":"Review"} · ${i+1}/${queue.length} · ${esc(s.name)} ${combo>=3?`· 🔥 ${combo}`:""}</p>
+      <div class="wcard q"><p class="qtext">${esc(Q.text)}</p></div>${keypadHTML()}<div id="fb"></div>`;
+    bindKeypad(v=>{kpHandler=null;const right=sameAns(v,Q.ans);q++;logHist("q",1);
+      if(!it.retry&&!bonus&&!(it.second&&right))grade(it.k,right);
+      if(right){ok++;combo++;logHist("ok",1);addXP(bonus?6:10+(combo>=4?5:0));$("#ans").classList.add("ok");
+        $("#fb").innerHTML=`<div class="fb"><b>Right.</b> <span class="muted">${esc(Q.sol)}</span></div><button class="btn" style="margin-top:10px" id="nx">Next</button>`;$("#nx").onclick=()=>{i++;step()}}
+      else{combo=0;wrongs.push(it.k);addXP(2);$("#ans").classList.add("bad");
+        $("#fb").innerHTML=`<div class="fb bad"><b>Answer: ${esc(fs(Q.ans))}</b><br>${esc(Q.sol)}<div class="hint" style="margin-top:8px">💡 ${esc(s.idea)}</div></div><button class="btn" style="margin-top:10px" id="nx">Try a similar one</button>`;
+        $("#nx").onclick=()=>{queue.splice(i+1,0,{kind:"q",k:it.k,retry:true});i++;step()}}
+      save()})};
+  const finish=()=>{inQuiz=false;touchStreak();addBadge("first");if(q>=8&&ok===q)addBadge("perfect");checkBadges();save();report();
+    const acc=q?Math.round(ok/q*100):100;
+    main.innerHTML=`<div class="rink"><h1>Session complete</h1><div class="stat"><span>Questions</span><span class="v">${q}</span></div><div class="stat"><span>Accuracy</span><span class="v">${acc}%</span></div><div class="stat"><span>Streak</span><span class="v">🔥 ${S.streak}</span></div>
+    ${wrongs.length?`<div class="blueline"><h3>Coming back tomorrow</h3>${[...new Set(wrongs)].map(k=>`<div class="wl"><b>${esc(SKILLS[IDX[k]].name)}</b><span class="muted">${esc(unitOf(k)[2])}</span></div>`).join("")}</div>`:`<p style="margin-top:14px">Perfect. ⭐</p>`}
+    <button class="btn" style="margin-top:16px" id="home">Back to Today</button></div>`;$("#home").onclick=()=>{tab="today";render()}};
+  step()}
+
+// ---------- unit check ----------
+function unitCheck(u){inQuiz=true;const unit=UNITS.find(x=>x[0]===u);const keys=SKILLS.filter(s=>s.u===u).map(s=>s.k);let i=0;const res=[];
+  const end=()=>{inQuiz=false;addBadge("checked");save();const good=res.filter(r=>r.ok).length;
+    main.innerHTML=`<div class="rink"><h1>Check done: ${esc(unit[1])}</h1><p class="muted">${esc(unit[2])} · ${esc(unit[3])}</p><p style="font-size:19px">${good} of ${res.length} right.</p>
+    ${res.map(r=>`<div class="wl"><b>${esc(SKILLS[IDX[r.k]].name)}</b><span class="pill ${r.ok?"b4":"due"}">${r.ok?"known":r.skip?"skipped":"to learn"}</span></div>`).join("")}
+    <p class="muted" style="margin-top:10px">Known skills still come back for review in a week. The rest are added to your daily sessions.</p><button class="btn" style="margin-top:12px" id="home">Back to Today</button></div>`;$("#home").onclick=()=>{tab="today";render()}};
+  const step=()=>{if(i>=keys.length)return end();const k=keys[i],s=SKILLS[IDX[k]],Q=s.gen();
+    main.innerHTML=`<div class="prog"><i style="width:${Math.round(i/keys.length*100)}%"></i></div><p class="muted">Unit check · ${esc(unit[1])} · ${i+1}/${keys.length}</p><div class="wcard q"><p class="qtext">${esc(Q.text)}</p></div>${keypadHTML()}<div class="row" style="margin-top:6px"><button class="btn ghost sm" id="skip">I haven't learned this</button><button class="btn ghost sm" id="stop">Stop for now</button></div>`;
+    const mark=(ok,skip)=>{S.check[k]={ok,d:todayKey()};if(ok&&ws(k).b===0)S.w[k]={b:3,d:Date.now()+7*DAY,l:0,c:1};res.push({k,ok,skip});save();i++;step()};
+    bindKeypad(v=>{kpHandler=null;mark(sameAns(v,Q.ans),false)});$("#skip").onclick=()=>{kpHandler=null;mark(false,true)};$("#stop").onclick=()=>{kpHandler=null;end()}};
+  step()}
+
+// ---------- skills tab ----------
+function rSkills(){const now=Date.now();
+  main.innerHTML=`<h1>Skills</h1><p class="muted">Mapped to Taiwan's 108 curriculum. Tap a unit for details or to run its check.</p>${UNITS.map(u=>{const its=SKILLS.filter(s=>s.u===u[0]);const m=its.filter(s=>mastered(s.k)).length,l=its.filter(s=>learned(s.k)).length;
+    return `<button class="unit" data-u="${u[0]}"><div class="row" style="justify-content:space-between;width:100%;align-items:baseline"><span><b>${esc(u[1])}</b> <span class="muted">${esc(u[2])}</span></span><span class="muted">${esc(u[3])} · ${m}/${its.length}</span></div><div class="bar"><i style="width:${m/its.length*100}%"></i><i class="s" style="width:${(l-m)/its.length*100}%"></i></div></button>`}).join("")}<p class="kb">Dark = mastered · light = learning</p>`;
+  document.querySelectorAll(".unit").forEach(b=>b.onclick=()=>{const u=UNITS.find(x=>x[0]===b.dataset.u);const its=SKILLS.filter(s=>s.u===u[0]);$("#modal").classList.remove("hidden");
+    $("#modal").innerHTML=`<div style="max-height:82vh;overflow:auto"><h2>${esc(u[1])}</h2><p class="muted">${esc(u[2])} · ${esc(u[3])}</p>${its.map(s=>{const x=ws(s.k),c=S.check[s.k];return `<div class="wl"><span><b>${esc(s.name)}</b>${c?` <span class="muted" style="font-size:13px">check: ${c.ok?"✓":"✗"}</span>`:""}</span><span class="pill ${x.b>=4?"b4":x.b>0&&x.d<=now?"due":""}">${x.b===0?"new":x.b>=4?"mastered":x.d<=now?"due":"box "+x.b}${x.l?` · ${x.l} miss`:""}</span></div>`}).join("")}
+    <div class="row" style="margin-top:12px"><button class="btn gold sm" id="uc">Run unit check</button><button class="btn ghost sm" id="cl">Close</button></div></div>`;
+    $("#cl").onclick=()=>$("#modal").classList.add("hidden");$("#uc").onclick=()=>{$("#modal").classList.add("hidden");unitCheck(u[0])}})}
+
+// ---------- plan ----------
+function rPlan(){const pc=pace();const s1=semSkills("上"),s2=semSkills("下");const l1=s1.filter(s=>learned(s.k)).length,l2=s2.filter(s=>learned(s.k)).length;
+  main.innerHTML=`<h1>Plan</h1><p class="muted">Target: Taiwan Grade 10 (高一, 108 curriculum). Goal date ${S.goal} · ${pc.d} days · ${pc.left} skills not yet learned.</p>
+  <div class="phase now"><div class="w">Now</div><div><b>Unit checks first.</b> Run the check for each unit (Today shows the next one). This shows exactly which 高一 skills are already solid and which are gaps.</div></div>
+  <div class="phase"><div class="w">高一上</div><div><b>${l1}/${s1.length} learned.</b> Middle-school foundations, Numbers & expressions (數與式), Lines & circles (直線與圓), Polynomial functions (多項式函數). In Taiwan these are taught from September to January, so they matter most right now.</div></div>
+  <div class="phase"><div class="w">高一下</div><div><b>${l2}/${s2.length} learned.</b> Sequences & series (數列與級數), Data analysis (數據分析), Counting (排列組合), Probability (機率). Taught February to June.</div></div>
+  <div class="phase"><div class="w">Daily</div><div>One session, 6 days a week, about 10–15 minutes: due reviews first, then ${S.perDay} new skill${S.perDay===1?"":"s"}. ${pc.rec>S.perDay?`To finish all skills two weeks before the goal date, about ${pc.rec} new per day is needed.`:""}</div></div>
+  <div class="blueline"><h3>What this app does and doesn't cover</h3><p class="muted" style="font-size:15px">It drills the core calculations of each 高一 topic with fresh problems every time. Taiwanese exams also ask multi-step and proof-style questions; once a unit here is mastered, a 高一 textbook or past-exam set (學測 style) is the right next step for that unit.</p></div>`}
+
+// ---------- stats ----------
+function rStats(){const days=[];for(let k=6;k>=0;k--){const key=todayKey(new Date(Date.now()-k*DAY));days.push({key,h:S.hist[key]})}
+  const tricky=SKILLS.filter(s=>ws(s.k).l>0).sort((a,b)=>ws(b.k).l-ws(a.k).l).slice(0,8);
+  const gaps=SKILLS.filter(s=>S.check[s.k]&&!S.check[s.k].ok);
+  main.innerHTML=`<h1>Stats</h1><div class="stat"><span>Skills mastered</span><span class="v">${masteredCount()} / ${SKILLS.length}</span></div><div class="stat"><span>Skills learned</span><span class="v">${SKILLS.filter(s=>learned(s.k)).length}</span></div><div class="stat"><span>Best streak</span><span class="v">${S.best}</span></div><div class="stat"><span>Total XP</span><span class="v">${S.xp}</span></div>
+  ${gaps.length?`<div class="blueline"><h3>Gaps found in unit checks</h3>${gaps.map(s=>`<div class="wl"><b>${esc(s.name)}</b><span class="muted">${esc(UNITS.find(u=>u[0]===s.u)[2])} · ${mastered(s.k)?"now mastered ✓":learned(s.k)?"learning":"not started"}</span></div>`).join("")}</div>`:""}
+  <div class="blueline"><h3>Last 7 days</h3>${days.map(x=>`<div class="stat"><span>${x.key.slice(5)}</span><span>${x.h?`${x.h.q||0} questions · ${x.h.q?Math.round((x.h.ok||0)/x.h.q*100):0}% · +${x.h.xp||0} XP`:"<span class='muted'>—</span>"}</span></div>`).join("")}</div>
+  ${tricky.length?`<div class="blueline"><h3>Trickiest so far</h3>${tricky.map(s=>`<div class="wl"><b>${esc(s.name)}</b><span class="muted">${ws(s.k).l} misses</span></div>`).join("")}</div>`:""}
+  <div class="blueline"><h3>Badges</h3><div class="badges">${BADGES.map(b=>`<div class="badge ${S.badges.includes(b[0])?"got":""}"><div class="e">${b[2]}</div><b>${b[1]}</b><div class="muted">${b[3]}</div></div>`).join("")}</div></div>`}
+
+// ---------- settings ----------
+function rSettings(){const pc=pace();
+  main.innerHTML=`<h1>Setup</h1><label class="f">Name</label><input id="nm" value="${esc(S.name)}">
+  <label class="f">Goal date</label><input id="gd" type="date" value="${S.goal}">
+  <label class="f">New skills per day (suggested now: ${pc.rec})</label><input id="pd" type="number" min="1" max="6" value="${S.perDay}">
+  <button class="btn" style="margin-top:16px" id="sv">Save setup</button>
+  <div class="blueline"><h3>Parent report</h3><p class="muted" style="font-size:14px">Paste the Google Apps Script web-app URL. After each session the app sends a one-line summary and a backup to that sheet.</p><input id="ru" placeholder="https://script.google.com/macros/s/.../exec" value="${esc(S.reportUrl||"")}"><div class="row" style="margin-top:8px"><button class="btn ghost sm" id="rt">Send a test report</button></div></div>
+  <div class="blueline"><h3>Backup</h3><div class="row"><button class="btn ghost sm" id="exp">Export progress</button><button class="btn ghost sm" id="imp">Import progress</button></div><textarea id="bk" style="width:100%;height:80px;margin-top:8px;font:13px monospace;border:2px solid var(--line);border-radius:8px;background:var(--ice2);color:var(--ink)" placeholder="Progress code appears here / paste a code here"></textarea></div>
+  <div class="note">Progress is saved on this device. App version ${APP_VERSION}.</div>
+  <div class="rink"><button class="btn ghost" id="rs">Reset all progress</button></div>`;
+  $("#sv").onclick=()=>{S.name=$("#nm").value.trim();S.goal=$("#gd").value||S.goal;S.perDay=Math.max(1,Math.min(6,+$("#pd").value||2));S.reportUrl=$("#ru").value.trim();save();toast("Saved");tab="today";render()};
+  $("#rt").onclick=()=>{S.reportUrl=$("#ru").value.trim();save();if(!S.reportUrl){alert("Paste a URL first.");return}report();toast("Sent — check the sheet")};
+  $("#exp").onclick=()=>{$("#bk").value=btoa(unescape(encodeURIComponent(JSON.stringify(S))));$("#bk").select();try{navigator.clipboard.writeText($("#bk").value);toast("Copied")}catch(e){}};
+  $("#imp").onclick=()=>{try{const o=JSON.parse(decodeURIComponent(escape(atob($("#bk").value.trim()))));if(!o.w)throw 0;if(confirm("Replace current progress with this code?")){S=Object.assign(fresh(),o);save();toast("Imported");tab="today";render()}}catch(e){alert("That code is not valid.")}};
+  $("#rs").onclick=()=>{if(confirm("Reset everything? This cannot be undone.")){const nm=S.name,g=S.goal,ru=S.reportUrl;S=fresh();S.name=nm;S.goal=g;S.reportUrl=ru;save();render()}}}
+
+// ---------- boot ----------
+load();render();if(S.pending&&navigator.onLine)report();
+if(!S.name){$("#modal").classList.remove("hidden");$("#modal").innerHTML=`<div><h2>Welcome to Math Prep</h2><p class="muted">Short daily practice on every Grade 10 math skill in Taiwan's curriculum. Start with the unit checks so practice goes only where it's needed.</p><label class="f">Your name</label><input id="n0" placeholder="Your name"><label class="f">Goal date</label><input id="g0" type="date" value="${S.goal}"><button class="btn" style="margin-top:14px" id="go">Get started</button></div>`;
+  $("#go").onclick=()=>{S.name=$("#n0").value.trim()||"Student";S.goal=$("#g0").value||S.goal;save();$("#modal").classList.add("hidden");render()}}
+
+if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>{document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")r.update().catch(()=>{})})}).catch(()=>{});let reloaded=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(reloaded||inQuiz)return;reloaded=true;location.reload()})}
+</script>
+</body>
+</html>
