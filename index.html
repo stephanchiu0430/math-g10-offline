@@ -127,6 +127,7 @@ label.f{display:block;margin:12px 0 4px;font-weight:600;font-size:15px}
 .unit{display:block;width:100%;text-align:left;padding:12px 0;border-bottom:1px solid var(--line)}
 .bar{height:10px;background:var(--line);border-radius:5px;overflow:hidden;display:flex;margin-top:6px}.bar i{display:block;height:100%;background:var(--green)}.bar i.s{background:color-mix(in srgb,var(--blue) 40%,var(--line))}
 .fb{white-space:pre-line}
+.chip.lg{flex:none;font-weight:600}
 </style>
 </head>
 <body>
@@ -137,16 +138,28 @@ label.f{display:block;margin:12px 0 4px;font-weight:600;font-size:15px}
   <div class="cell"><div class="n white" id="sbM">0</div><div class="l">mastered</div></div>
 </header>
 <main id="main"></main>
-<nav class="tabs" aria-label="Sections">
-  <button data-t="today" class="on"><span class="ic">🍳</span>Today</button>
-  <button data-t="skills"><span class="ic">📒</span>Skills</button>
-  <button data-t="plan"><span class="ic">⏲️</span>Plan</button>
-  <button data-t="stats"><span class="ic">🍰</span>Stats</button>
-  <button data-t="settings"><span class="ic">🧂</span>Setup</button>
-</nav>
+<nav class="tabs" aria-label="Sections"><button data-t="today" class="on"><span class="ic">🍳</span><span class="tx">today</span></button><button data-t="skills"><span class="ic">📒</span><span class="tx">skills</span></button><button data-t="plan"><span class="ic">⏲️</span><span class="tx">plan</span></button><button data-t="stats"><span class="ic">🍰</span><span class="tx">stats</span></button><button data-t="settings"><span class="ic">🧂</span><span class="tx">settings</span></button></nav>
 <div id="modal" class="modal hidden"></div>
 <script>
-// ===== Math Prep skill bank: Taiwan 108-curriculum Grade 10 (高一) + middle-school foundations =====
+const CFG={APPID:"mathprep",KEY:"mathprep-v1",APP_VERSION:"2026-11-21a",goal:"2027-06-30",lang:"en",themes:null,
+ levels:[[0,"Beginner","新手","🥚"],[250,"Learner","學徒","🍳"],[600,"Practiced","熟手","🥖"],[1200,"Skilled","好手","🥘"],[2200,"Advanced","高手","🍰"],[3600,"Expert","專家","🎂"],[5500,"Master","大師","🧑‍🍳"]],
+ badges:[["first","First session","第一次練習","🥄","Finish your first session","完成第一次練習"],["checked","Taste test","試味道","🔍","Finish a unit check","完成一次單元檢測"],
+  ["s7","7-day streak","連續 7 天","🔥","Study 7 days in a row","連續練習 7 天"],["s21","21-day streak","連續 21 天","🌶️","Study 21 days in a row","連續練習 21 天"],
+  ["sem1","高一上 covered","高一上完成","🍱","Every 高一上 skill learned","學完高一上（含國中先備）所有技能"],["sem2","高一下 covered","高一下完成","🍽️","Every 高一下 skill learned","學完高一下所有技能"],
+  ["m20","20 mastered","熟練 20 個","🧁","Master 20 skills","熟練 20 個技能"],["perfect","Perfect session","全對","⭐","A session with zero mistakes (8+ questions)","一次練習全對（8 題以上）"]],
+ todayTitle:["Today’s session","今天的練習"],doneTitle:["Done for today ✔","今天完成了 ✔"],finishTitle:["Session complete","練習完成"],perfectLine:["Perfect. ⭐","全對！⭐"],goBtn:["Get started","開始"],
+ kpHint:["Fractions like −3/4 are fine. Decimals work too.","可以輸入分數（例如 −3/4）或小數。"],
+ skillsIntro:["Mapped to Taiwan's 108 curriculum. Tap a unit for details or to run its check.","依照台灣 108 課綱編排。點選單元可以查看細節或進行檢測。"],
+ welcome:["Welcome to Math Prep","歡迎使用 Math Prep","Short daily practice on every Grade 10 math skill in Taiwan's curriculum. Start with the unit checks so practice goes only where it's needed.","每天短時間練習台灣高一數學的每個技能。先做單元檢測，之後只練需要加強的地方。"],
+ plan:({pc,s1,s2,l1,l2})=>`<p class="muted">${L(`Target: Taiwan Grade 10 (高一, 108 curriculum). Goal date ${S.goal} · ${pc.d} days · ${pc.left} skills not yet learned.`,`目標：台灣高一（108 課綱）。目標日期 ${S.goal}，還有 ${pc.d} 天，尚有 ${pc.left} 個技能未學。`)}</p>
+  <div class="phase now"><div class="w">${L("Now","現在")}</div><div>${L("<b>Unit checks first.</b> Run the check for each unit (Today shows the next one). This shows exactly which 高一 skills are already solid and which are gaps.","<b>先做單元檢測。</b>每個單元都做一次（「今天」頁會顯示下一個）。這樣就知道哪些高一技能已經會了、哪些是缺口。")}</div></div>
+  <div class="phase"><div class="w">高一上</div><div>${L(`<b>${l1}/${s1.length} learned.</b> Middle-school foundations, Numbers & expressions (數與式), Lines & circles (直線與圓), Polynomial functions (多項式函數). In Taiwan these are taught from September to January, so they matter most right now.`,`<b>已學 ${l1}/${s1.length}。</b>國中先備、數與式、直線與圓、多項式函數。台灣在 9 月到 1 月教這些，所以現在最重要。`)}</div></div>
+  <div class="phase"><div class="w">高一下</div><div>${L(`<b>${l2}/${s2.length} learned.</b> Sequences & series (數列與級數), Data analysis (數據分析), Counting (排列組合), Probability (機率). Taught February to June.`,`<b>已學 ${l2}/${s2.length}。</b>數列與級數、數據分析、排列組合、機率。在 2 月到 6 月教。`)}</div></div>
+  <div class="phase"><div class="w">${L("Daily","每天")}</div><div>${L(`One session, 6 days a week, about 10–15 minutes: due reviews first, then ${S.perDay} new skill${S.perDay===1?"":"s"}.`,`一週 6 天，每天一次，約 10–15 分鐘：先複習，再學 ${S.perDay} 個新技能。`)} ${pc.rec>S.perDay?L(`To finish all skills two weeks before the goal date, about ${pc.rec} new per day is needed.`,`若要在目標日期前兩週學完，每天約需 ${pc.rec} 個新技能。`):""}</div></div>
+  <div class="blueline"><h3>${L("What this app does and doesn't cover","這個 App 的範圍")}</h3><p class="muted" style="font-size:15px">${L("It drills the core calculations of each 高一 topic with fresh problems every time. Taiwanese exams also ask multi-step and proof-style questions; once a unit here is mastered, a 高一 textbook or 學測-style problem set is the right next step for that unit.","它用每次都不同的新題目，練習每個高一主題的核心計算。台灣的考試還有多步驟和證明型的題目；某個單元在這裡熟練之後，下一步就是做那個單元的高一課本習題或學測題。")}</p></div>`};
+
+// ===== Math Prep skill bank: Taiwan 108-curriculum Grade 10 (高一) + middle-school foundations — bilingual =====
+const L=(en,zh)=>(typeof S!=="undefined"&&S&&S.lang==="zh")?zh:en;
 const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const nz=(a,b)=>{let v;do{v=rnd(a,b)}while(v===0);return v};
@@ -157,17 +170,20 @@ function fs(f){if(typeof f==="number")return neg(f);return f.d===1?neg(f.n):neg(
 const fact=n=>n<=1?1:n*fact(n-1);
 const C=(n,k)=>k<0||k>n?0:fact(n)/(fact(k)*fact(n-k));
 const P=(n,k)=>fact(n)/fact(n-k);
-// write a polynomial from coefficients [a_n,...,a_0]
 function poly(cs,v="x"){const n=cs.length-1;let s="";cs.forEach((c,i)=>{if(c===0)return;const p=n-i;const a=Math.abs(c);
   const coef=(a===1&&p>0)?"":String(a);const varp=p===0?"":p===1?v:v+(p===2?"²":p===3?"³":"^"+p);
   s+=(s===""?(c<0?"−":""):(c<0?" − ":" + "))+coef+varp});return s||"0"}
 const tm=(c,v)=>(c<0?"−":"")+(Math.abs(c)===1?"":Math.abs(c))+v;
 const xm=v=>v<0?"x + "+(-v):"x − "+v;
-const sgn=(n)=>n<0?" − "+(-n):" + "+n;   // "+ 3" / "− 3"
+const ym=v=>v<0?"y + "+(-v):"y − "+v;
+const sgn=(n)=>n<0?" − "+(-n):" + "+n;
 const par=n=>n<0?"("+neg(n)+")":String(n);
+function sub(n){return String(n).split("").map(c=>"₀₁₂₃₄₅₆₇₈₉"[+c]).join("")}
+function sup(n){return String(n).split("").map(c=>"⁰¹²³⁴⁵⁶⁷⁸⁹"[+c]).join("")}
 
+// [key, English name, Chinese name, semester]
 const UNITS=[
- ["pre","Middle-school foundations","國中先備","Before 高一"],
+ ["pre","Middle-school foundations","國中先備","高一前"],
  ["num","Numbers & expressions","數與式","高一上"],
  ["line","Lines & circles","直線與圓","高一上"],
  ["poly","Polynomial functions","多項式函數","高一上"],
@@ -175,191 +191,183 @@ const UNITS=[
  ["stat","Data analysis","數據分析","高一下"],
  ["count","Counting","排列組合","高一下"],
  ["prob","Probability","機率","高一下"]];
+const SEM1=["高一前","高一上"],SEM2=["高一下"];
 
-// each skill: k, u, name, idea (shown on learn card), gen() -> {text, ans (number|{n,d}), sol}
 const SKILLS=[
 // ---------- foundations ----------
-{k:"pre:lin",u:"pre",name:"Linear equations",idea:"Move x-terms to one side and numbers to the other, then divide.",gen(){
+{k:"pre:lin",u:"pre",name:["Linear equations","一元一次方程式"],idea:["Move x-terms to one side and numbers to the other, then divide.","把含 x 的項移到一邊、數字移到另一邊，再相除。"],gen(){
   const x=rnd(-9,9);let a=rnd(2,9),c;do{c=rnd(1,9)}while(c===a);const b=rnd(-12,12),d=a*x+b-c*x;
-  return{text:`Solve for x:  ${a}x${sgn(b)} = ${c}x${sgn(d)}`,ans:x,sol:`${a}x − ${c}x = ${neg(d)} − ${par(b)} → ${tm(a-c,"x")} = ${neg(d-b)} → x = ${neg(x)}`}}},
-{k:"pre:sys",u:"pre",name:"Systems of two equations",idea:"Eliminate one variable by adding or subtracting multiples of the equations.",gen(){
+  return{text:L("Solve for x:  ","解 x：  ")+`${a}x${sgn(b)} = ${c}x${sgn(d)}`,ans:x,sol:`${a}x − ${c}x = ${neg(d)} − ${par(b)} → ${tm(a-c,"x")} = ${neg(d-b)} → x = ${neg(x)}`}}},
+{k:"pre:sys",u:"pre",name:["Systems of two equations","二元一次聯立方程式"],idea:["Eliminate one variable by adding or subtracting multiples of the equations.","把兩式乘上倍數後相加減，消去一個未知數。"],gen(){
   const x=rnd(-6,6),y=rnd(-6,6);let a1,b1,a2,b2;do{a1=nz(-5,5);b1=nz(-5,5);a2=nz(-5,5);b2=nz(-5,5)}while(a1*b2-a2*b1===0);
   const e=(a,b,c)=>`${tm(a,"x")}${b<0?" − ":" + "}${Math.abs(b)===1?"":Math.abs(b)}y = ${neg(c)}`;
-  return{text:`Solve:\n${e(a1,b1,a1*x+b1*y)}\n${e(a2,b2,a2*x+b2*y)}\nWhat is x + y?`,ans:x+y,sol:`Eliminating one variable gives x = ${neg(x)}, y = ${neg(y)}, so x + y = ${neg(x+y)}.`}}},
-{k:"pre:quad",u:"pre",name:"Solving quadratics by factoring",idea:"Write x² + bx + c as (x − r)(x − s): r + s = −b and rs = c.",gen(){
+  return{text:L("Solve:","解聯立方程式：")+`\n${e(a1,b1,a1*x+b1*y)}\n${e(a2,b2,a2*x+b2*y)}\n`+L("What is x + y?","x + y = ?"),ans:x+y,sol:L(`Eliminating one variable gives x = ${neg(x)}, y = ${neg(y)}, so x + y = ${neg(x+y)}.`,`消去一個未知數得 x = ${neg(x)}、y = ${neg(y)}，所以 x + y = ${neg(x+y)}。`)}}},
+{k:"pre:quad",u:"pre",name:["Solving quadratics by factoring","因式分解解一元二次方程式"],idea:["Write x² + bx + c as (x − r)(x − s): r + s = −b and rs = c.","把 x² + bx + c 寫成 (x − r)(x − s)：r + s = −b，rs = c。"],gen(){
   let r,s;do{r=rnd(-9,9);s=rnd(-9,9)}while(r===s);const big=Math.max(r,s);
-  return{text:`${poly([1,-(r+s),r*s])} = 0\nWhat is the larger root?`,ans:big,sol:`${poly([1,-(r+s),r*s])} = (x ${r<0?"+ "+(-r):"− "+r})(x ${s<0?"+ "+(-s):"− "+s}), so x = ${neg(r)} or ${neg(s)}. Larger: ${neg(big)}.`}}},
-{k:"pre:pyth",u:"pre",name:"Pythagorean theorem",idea:"In a right triangle, a² + b² = c², where c is the hypotenuse.",gen(){
+  return{text:`${poly([1,-(r+s),r*s])} = 0\n`+L("What is the larger root?","較大的根是多少？"),ans:big,sol:`${poly([1,-(r+s),r*s])} = (${xm(r)})(${xm(s)}) → x = ${neg(r)}, ${neg(s)} → ${neg(big)}`}}},
+{k:"pre:pyth",u:"pre",name:["Pythagorean theorem","畢氏定理"],idea:["In a right triangle, a² + b² = c², where c is the hypotenuse.","直角三角形中 a² + b² = c²，c 是斜邊。"],gen(){
   const t=pick([[3,4,5],[5,12,13],[8,15,17],[7,24,25]]),m=rnd(1,4);const[a,b,c]=t.map(v=>v*m);
-  if(Math.random()<.5)return{text:`A right triangle has legs ${a} and ${b}. How long is the hypotenuse?`,ans:c,sol:`√(${a}² + ${b}²) = √${a*a+b*b} = ${c}`};
-  return{text:`A right triangle has hypotenuse ${c} and one leg ${a}. How long is the other leg?`,ans:b,sol:`√(${c}² − ${a}²) = √${c*c-a*a} = ${b}`}}},
-{k:"pre:exp",u:"pre",name:"Exponent rules",idea:"aᵐ·aⁿ = aᵐ⁺ⁿ,  aᵐ ÷ aⁿ = aᵐ⁻ⁿ,  (aᵐ)ⁿ = aᵐⁿ,  a⁰ = 1.",gen(){
+  if(Math.random()<.5)return{text:L(`A right triangle has legs ${a} and ${b}. How long is the hypotenuse?`,`直角三角形的兩股長為 ${a} 和 ${b}，斜邊長是多少？`),ans:c,sol:`√(${a}² + ${b}²) = √${a*a+b*b} = ${c}`};
+  return{text:L(`A right triangle has hypotenuse ${c} and one leg ${a}. How long is the other leg?`,`直角三角形的斜邊長 ${c}，一股長 ${a}，另一股長是多少？`),ans:b,sol:`√(${c}² − ${a}²) = √${c*c-a*a} = ${b}`}}},
+{k:"pre:exp",u:"pre",name:["Exponent rules","指數律"],idea:["aᵐ·aⁿ = aᵐ⁺ⁿ,  aᵐ ÷ aⁿ = aᵐ⁻ⁿ,  (aᵐ)ⁿ = aᵐⁿ,  a⁰ = 1.","aᵐ·aⁿ = aᵐ⁺ⁿ，aᵐ ÷ aⁿ = aᵐ⁻ⁿ，(aᵐ)ⁿ = aᵐⁿ，a⁰ = 1。"],gen(){
   const a=rnd(2,7),b=rnd(2,6),c=rnd(1,9),e=rnd(2,3);
   if(Math.random()<.5)return{text:`2^${a} × 2^${b} ÷ 2^${c} = 2^n.  n = ?`,ans:a+b-c,sol:`${a} + ${b} − ${c} = ${neg(a+b-c)}`};
   return{text:`(x^${a})^${e} × x^${b} = x^n.  n = ?`,ans:a*e+b,sol:`${a}·${e} + ${b} = ${a*e+b}`}}},
 // ---------- 數與式 ----------
-{k:"num:abs",u:"num",name:"Absolute value",idea:"|x − a| is the distance from x to a.  |x − a| ≤ b means a − b ≤ x ≤ a + b.",gen(){
+{k:"num:abs",u:"num",name:["Absolute value","絕對值"],idea:["|x − a| is the distance from x to a.  |x − a| ≤ b means a − b ≤ x ≤ a + b.","|x − a| 是 x 到 a 的距離。|x − a| ≤ b 表示 a − b ≤ x ≤ a + b。"],gen(){
   const a=rnd(-6,6),b=rnd(1,7);
-  if(Math.random()<.5)return{text:`How many integers x satisfy |x ${a<0?"+ "+(-a):"− "+a}| ≤ ${b}?`,ans:2*b+1,sol:`${neg(a-b)} ≤ x ≤ ${neg(a+b)}: that is ${2*b+1} integers.`};
-  return{text:`|x ${a<0?"+ "+(-a):"− "+a}| = ${b}. What is the sum of all solutions?`,ans:2*a,sol:`x = ${neg(a)} ± ${b}: ${neg(a-b)} and ${neg(a+b)}, sum ${neg(2*a)}.`}}},
-{k:"num:rad",u:"num",name:"Simplifying radicals",idea:"Pull out perfect-square factors: √(k²·m) = k√m.",gen(){
+  if(Math.random()<.5)return{text:L(`How many integers x satisfy |${xm(a)}| ≤ ${b}?`,`滿足 |${xm(a)}| ≤ ${b} 的整數 x 有幾個？`),ans:2*b+1,sol:L(`${neg(a-b)} ≤ x ≤ ${neg(a+b)}: that is ${2*b+1} integers.`,`${neg(a-b)} ≤ x ≤ ${neg(a+b)}，共 ${2*b+1} 個整數。`)};
+  return{text:L(`|${xm(a)}| = ${b}. What is the sum of all solutions?`,`|${xm(a)}| = ${b}，所有解的和是多少？`),ans:2*a,sol:`x = ${neg(a)} ± ${b} → ${neg(a-b)}, ${neg(a+b)} → ${neg(2*a)}`}}},
+{k:"num:rad",u:"num",name:["Simplifying radicals","根式化簡"],idea:["Pull out perfect-square factors: √(k²·m) = k√m.","把完全平方因數提出：√(k²·m) = k√m。"],gen(){
   const m=pick([2,3,5,6,7,10]),k=rnd(2,7),n=k*k*m;
-  return{text:`Write √${n} as a√b with b as small as possible. What is a + b?`,ans:k+m,sol:`√${n} = √(${k*k}·${m}) = ${k}√${m}, so a + b = ${k+m}.`}}},
-{k:"num:ration",u:"num",name:"Rationalizing denominators",idea:"Multiply by the conjugate: (√a + √b)(√a − √b) = a − b.",gen(){
+  return{text:L(`Write √${n} as a√b with b as small as possible. What is a + b?`,`把 √${n} 化成最簡根式 a√b，a + b = ?`),ans:k+m,sol:`√${n} = √(${k*k}·${m}) = ${k}√${m} → ${k+m}`}}},
+{k:"num:ration",u:"num",name:["Rationalizing denominators","分母有理化"],idea:["Multiply by the conjugate: (√a + √b)(√a − √b) = a − b.","乘上共軛：(√a + √b)(√a − √b) = a − b。"],gen(){
   let p,q;do{p=rnd(3,15);q=rnd(2,p-1)}while(Number.isInteger(Math.sqrt(p))||Number.isInteger(Math.sqrt(q)));
   if(Math.random()<.5)return{text:`(√${p} + √${q})(√${p} − √${q}) = ?`,ans:p-q,sol:`(√${p})² − (√${q})² = ${p} − ${q} = ${p-q}`};
-  return{text:`1 ⁄ (√${p} − √${q}) = (√${p} + √${q}) ⁄ k.  k = ?`,ans:p-q,sol:`Multiply top and bottom by √${p} + √${q}: the bottom becomes ${p} − ${q} = ${p-q}.`}}},
-{k:"num:ident",u:"num",name:"Multiplication formulas",idea:"x² + y² = (x + y)² − 2xy,  (x − y)² = (x + y)² − 4xy,  x³ + y³ = (x + y)³ − 3xy(x + y).",gen(){
-  const s=rnd(-6,8),p=rnd(-6,8),t=rnd(0,2);
-  if(t===0)return{text:`x + y = ${neg(s)} and xy = ${neg(p)}. Find x² + y².`,ans:s*s-2*p,sol:`(x + y)² − 2xy = ${s*s} − ${par(2*p)} = ${neg(s*s-2*p)}`};
-  if(t===1)return{text:`x + y = ${neg(s)} and xy = ${neg(p)}. Find (x − y)².`,ans:s*s-4*p,sol:`(x + y)² − 4xy = ${s*s} − ${par(4*p)} = ${neg(s*s-4*p)}`};
-  return{text:`x + y = ${neg(s)} and xy = ${neg(p)}. Find x³ + y³.`,ans:s**3-3*p*s,sol:`(x + y)³ − 3xy(x + y) = ${neg(s**3)} − 3·${par(p)}·${par(s)} = ${neg(s**3-3*p*s)}`}}},
-{k:"num:divpt",u:"num",name:"Division points on a number line",idea:"P divides AB internally in ratio m : n  →  P = (n·A + m·B) ⁄ (m + n).",gen(){
+  return{text:`1 ⁄ (√${p} − √${q}) = (√${p} + √${q}) ⁄ k.  k = ?`,ans:p-q,sol:L(`Multiply top and bottom by √${p} + √${q}: the bottom becomes ${p} − ${q} = ${p-q}.`,`分子分母同乘 √${p} + √${q}，分母變成 ${p} − ${q} = ${p-q}。`)}}},
+{k:"num:ident",u:"num",name:["Multiplication formulas","乘法公式"],idea:["x² + y² = (x + y)² − 2xy,  (x − y)² = (x + y)² − 4xy,  x³ + y³ = (x + y)³ − 3xy(x + y).","x² + y² = (x + y)² − 2xy，(x − y)² = (x + y)² − 4xy，x³ + y³ = (x + y)³ − 3xy(x + y)。"],gen(){
+  const s=rnd(-6,8),p=rnd(-6,8),t=rnd(0,2);const giv=L(`x + y = ${neg(s)} and xy = ${neg(p)}. Find `,`已知 x + y = ${neg(s)}、xy = ${neg(p)}，求 `);
+  if(t===0)return{text:giv+"x² + y².",ans:s*s-2*p,sol:`(x + y)² − 2xy = ${s*s} − ${par(2*p)} = ${neg(s*s-2*p)}`};
+  if(t===1)return{text:giv+"(x − y)².",ans:s*s-4*p,sol:`(x + y)² − 4xy = ${s*s} − ${par(4*p)} = ${neg(s*s-4*p)}`};
+  return{text:giv+"x³ + y³.",ans:s**3-3*p*s,sol:`(x + y)³ − 3xy(x + y) = ${neg(s**3)} − 3·${par(p)}·${par(s)} = ${neg(s**3-3*p*s)}`}}},
+{k:"num:divpt",u:"num",name:["Division points on a number line","數線上的分點"],idea:["P divides AB internally in ratio m : n  →  P = (n·A + m·B) ⁄ (m + n).","P 在 AB 上且 AP : PB = m : n，則 P = (n·A + m·B) ⁄ (m + n)。"],gen(){
   const A=rnd(-10,4),B=rnd(A+3,14),m=rnd(1,4),n=rnd(1,4);const ans=F(n*A+m*B,m+n);
-  return{text:`A = ${neg(A)} and B = ${neg(B)} on a number line. P is on AB with AP : PB = ${m} : ${n}. What is P?`,ans,sol:`(${n}·${par(A)} + ${m}·${par(B)}) ⁄ ${m+n} = ${neg(n*A+m*B)} ⁄ ${m+n} = ${fs(ans)}`}}},
+  return{text:L(`A = ${neg(A)} and B = ${neg(B)} on a number line. P is on AB with AP : PB = ${m} : ${n}. What is P?`,`數線上 A = ${neg(A)}、B = ${neg(B)}，P 在 AB 上且 AP : PB = ${m} : ${n}，P 的坐標是多少？`),ans,sol:`(${n}·${par(A)} + ${m}·${par(B)}) ⁄ ${m+n} = ${fs(ans)}`}}},
 // ---------- 直線與圓 ----------
-{k:"line:slope",u:"line",name:"Slope",idea:"Slope through (x₁, y₁) and (x₂, y₂) = (y₂ − y₁) ⁄ (x₂ − x₁).",gen(){
+{k:"line:slope",u:"line",name:["Slope","斜率"],idea:["Slope through (x₁, y₁) and (x₂, y₂) = (y₂ − y₁) ⁄ (x₂ − x₁).","通過 (x₁, y₁)、(x₂, y₂) 的斜率 = (y₂ − y₁) ⁄ (x₂ − x₁)。"],gen(){
   let x1,x2;do{x1=rnd(-6,6);x2=rnd(-6,6)}while(x1===x2);const y1=rnd(-8,8),y2=rnd(-8,8),ans=F(y2-y1,x2-x1);
-  return{text:`What is the slope of the line through (${neg(x1)}, ${neg(y1)}) and (${neg(x2)}, ${neg(y2)})?`,ans,sol:`(${neg(y2)} − ${par(y1)}) ⁄ (${neg(x2)} − ${par(x1)}) = ${neg(y2-y1)} ⁄ ${neg(x2-x1)} = ${fs(ans)}`}}},
-{k:"line:eq",u:"line",name:"Equation of a line",idea:"Point-slope form: y − y₀ = m(x − x₀). The y-intercept is where x = 0.",gen(){
+  return{text:L(`What is the slope of the line through (${neg(x1)}, ${neg(y1)}) and (${neg(x2)}, ${neg(y2)})?`,`通過 (${neg(x1)}, ${neg(y1)}) 與 (${neg(x2)}, ${neg(y2)}) 的直線斜率是多少？`),ans,sol:`(${neg(y2)} − ${par(y1)}) ⁄ (${neg(x2)} − ${par(x1)}) = ${fs(ans)}`}}},
+{k:"line:eq",u:"line",name:["Equation of a line","直線方程式"],idea:["Point-slope form: y − y₀ = m(x − x₀). The y-intercept is where x = 0.","點斜式：y − y₀ = m(x − x₀)。y 截距是 x = 0 時的 y 值。"],gen(){
   const q=pick([1,1,2,3]),p=nz(-6,6),x0=rnd(-5,5),y0=rnd(-6,6);const m=F(p,q);const b=F(y0*q-p*x0,q);
-  return{text:`A line has slope ${fs(m)} and passes through (${neg(x0)}, ${neg(y0)}). What is its y-intercept?`,ans:b,sol:`b = y₀ − m·x₀ = ${neg(y0)} − (${fs(m)})·${par(x0)} = ${fs(b)}`}}},
-{k:"line:perp",u:"line",name:"Parallel and perpendicular lines",idea:"Line ax + by + c = 0 has slope −a ⁄ b. Parallel: same slope. Perpendicular: slopes multiply to −1.",gen(){
-  const a=nz(-6,6),b=nz(-6,6),c=rnd(-9,9);const L=`${tm(a,"x")}${b<0?" − ":" + "}${Math.abs(b)===1?"":Math.abs(b)}y${c===0?"":sgn(c)} = 0`;const m=F(-a,b);
-  if(Math.random()<.5)return{text:`What is the slope of a line perpendicular to ${L}?`,ans:F(b,a),sol:`Slope of the line = ${fs(m)}. Perpendicular slope = −1 ⁄ (${fs(m)}) = ${fs(F(b,a))}`};
-  return{text:`What is the slope of a line parallel to ${L}?`,ans:m,sol:`Slope = −a ⁄ b = ${fs(m)}`}}},
-{k:"line:dist",u:"line",name:"Distance from a point to a line",idea:"Distance from (x₀, y₀) to ax + by + c = 0 is |ax₀ + by₀ + c| ⁄ √(a² + b²).",gen(){
+  return{text:L(`A line has slope ${fs(m)} and passes through (${neg(x0)}, ${neg(y0)}). What is its y-intercept?`,`斜率 ${fs(m)} 且通過 (${neg(x0)}, ${neg(y0)}) 的直線，y 截距是多少？`),ans:b,sol:`b = y₀ − m·x₀ = ${neg(y0)} − (${fs(m)})·${par(x0)} = ${fs(b)}`}}},
+{k:"line:perp",u:"line",name:["Parallel and perpendicular lines","平行與垂直"],idea:["Line ax + by + c = 0 has slope −a ⁄ b. Parallel: same slope. Perpendicular: slopes multiply to −1.","直線 ax + by + c = 0 的斜率為 −a ⁄ b。平行：斜率相同；垂直：斜率相乘為 −1。"],gen(){
+  const a=nz(-6,6),b=nz(-6,6),c=rnd(-9,9);const Ln=`${tm(a,"x")}${b<0?" − ":" + "}${Math.abs(b)===1?"":Math.abs(b)}y${c===0?"":sgn(c)} = 0`;const m=F(-a,b);
+  if(Math.random()<.5)return{text:L(`What is the slope of a line perpendicular to ${Ln}?`,`與 ${Ln} 垂直的直線，斜率是多少？`),ans:F(b,a),sol:`${fs(m)} → −1 ⁄ (${fs(m)}) = ${fs(F(b,a))}`};
+  return{text:L(`What is the slope of a line parallel to ${Ln}?`,`與 ${Ln} 平行的直線，斜率是多少？`),ans:m,sol:`−a ⁄ b = ${fs(m)}`}}},
+{k:"line:dist",u:"line",name:["Distance from a point to a line","點到直線的距離"],idea:["Distance from (x₀, y₀) to ax + by + c = 0 is |ax₀ + by₀ + c| ⁄ √(a² + b²).","點 (x₀, y₀) 到 ax + by + c = 0 的距離 = |ax₀ + by₀ + c| ⁄ √(a² + b²)。"],gen(){
   const [a0,b0,r]=pick([[3,4,5],[4,3,5],[5,12,13],[12,5,13],[6,8,10],[8,6,10]]);const a=a0*pick([1,-1]),b=b0*pick([1,-1]);const x0=rnd(-4,4),y0=rnd(-4,4),D=rnd(1,5);
-  const c=D*r*pick([1,-1])-a*x0-b*y0;const L=`${tm(a,"x")}${b<0?" − ":" + "}${Math.abs(b)}y${c===0?"":sgn(c)} = 0`;
-  return{text:`Find the distance from (${neg(x0)}, ${neg(y0)}) to the line ${L}.`,ans:D,sol:`|${par(a)}·${par(x0)} + ${par(b)}·${par(y0)} + ${par(c)}| ⁄ √(${a*a} + ${b*b}) = ${Math.abs(a*x0+b*y0+c)} ⁄ ${r} = ${D}`}}},
-{k:"line:circ",u:"line",name:"Equation of a circle",idea:"(x − h)² + (y − k)² = r². From x² + y² + Dx + Ey + F = 0, complete the square: center (−D⁄2, −E⁄2).",gen(){
+  const c=D*r*pick([1,-1])-a*x0-b*y0;const Ln=`${tm(a,"x")}${b<0?" − ":" + "}${Math.abs(b)}y${c===0?"":sgn(c)} = 0`;
+  return{text:L(`Find the distance from (${neg(x0)}, ${neg(y0)}) to the line ${Ln}.`,`求點 (${neg(x0)}, ${neg(y0)}) 到直線 ${Ln} 的距離。`),ans:D,sol:`|${par(a)}·${par(x0)} + ${par(b)}·${par(y0)} + ${par(c)}| ⁄ √(${a*a} + ${b*b}) = ${Math.abs(a*x0+b*y0+c)} ⁄ ${r} = ${D}`}}},
+{k:"line:circ",u:"line",name:["Equation of a circle","圓方程式"],idea:["(x − h)² + (y − k)² = r². From x² + y² + Dx + Ey + F = 0, complete the square: center (−D⁄2, −E⁄2).","(x − h)² + (y − k)² = r²。由一般式 x² + y² + Dx + Ey + F = 0 配方，圓心為 (−D⁄2, −E⁄2)。"],gen(){
   const h=rnd(-5,5),k=rnd(-5,5),r=rnd(1,7);const D=-2*h,E=-2*k,Fc=h*h+k*k-r*r;
   const eq=`x² + y²${D?sgn(D)+"x":""}${E?sgn(E)+"y":""}${Fc?sgn(Fc):""} = 0`;
-  if(Math.random()<.5)return{text:`${eq}\nWhat is the radius?`,ans:r,sol:`(x ${h<0?"+ "+(-h):"− "+h})² + (y ${k<0?"+ "+(-k):"− "+k})² = ${h*h+k*k-Fc} → r = ${r}`};
-  return{text:`${eq}\nThe center is (h, k). What is h + k?`,ans:h+k,sol:`Center = (−D⁄2, −E⁄2) = (${neg(h)}, ${neg(k)}), so h + k = ${neg(h+k)}`}}},
-{k:"line:lc",u:"line",name:"Line and circle",idea:"Compare the distance d from the center to the line with r: d < r → 2 points, d = r → 1 (tangent), d > r → 0.",gen(){
+  if(Math.random()<.5)return{text:`${eq}\n`+L("What is the radius?","半徑是多少？"),ans:r,sol:`(${xm(h)})² + (${ym(k)})² = ${h*h+k*k-Fc} → r = ${r}`};
+  return{text:`${eq}\n`+L("The center is (h, k). What is h + k?","圓心為 (h, k)，h + k = ?"),ans:h+k,sol:`(−D⁄2, −E⁄2) = (${neg(h)}, ${neg(k)}) → ${neg(h+k)}`}}},
+{k:"line:lc",u:"line",name:["Line and circle","直線與圓的關係"],idea:["Compare the distance d from the center to the line with r: d < r → 2 points, d = r → 1 (tangent), d > r → 0.","比較圓心到直線的距離 d 與半徑 r：d < r 交於 2 點，d = r 相切 1 點，d > r 不相交。"],gen(){
   const h=rnd(-4,4),k=rnd(-4,4),r=rnd(2,6);const [a0,b0,n]=pick([[3,4,5],[4,3,5]]);const a=a0,b=b0*pick([1,-1]);
   const D=pick([r-1,r,r+1,r+2,Math.max(0,r-2)]);const c=D*n-a*h-b*k;const pts=D<r?2:D===r?1:0;
-  return{text:`Circle: (x ${h<0?"+ "+(-h):"− "+h})² + (y ${k<0?"+ "+(-k):"− "+k})² = ${r*r}\nLine: ${a}x${b<0?" − ":" + "}${Math.abs(b)}y${c===0?"":sgn(c)} = 0\nHow many points do they share?`,ans:pts,sol:`d = |${a}·${par(h)} + ${par(b)}·${par(k)} + ${par(c)}| ⁄ 5 = ${D}, r = ${r} → ${pts} point${pts===1?"":"s"}.`}}},
+  return{text:L("Circle: ","圓：")+`(${xm(h)})² + (${ym(k)})² = ${r*r}\n`+L("Line: ","直線：")+`${a}x${b<0?" − ":" + "}${Math.abs(b)}y${c===0?"":sgn(c)} = 0\n`+L("How many points do they share?","兩者有幾個交點？"),ans:pts,sol:`d = |${a}·${par(h)} + ${par(b)}·${par(k)} + ${par(c)}| ⁄ 5 = ${D}, r = ${r} → ${pts}`}}},
 // ---------- 多項式函數 ----------
-{k:"poly:rem",u:"poly",name:"Remainder theorem",idea:"The remainder of f(x) ÷ (x − a) is f(a).",gen(){
+{k:"poly:rem",u:"poly",name:["Remainder theorem","餘式定理"],idea:["The remainder of f(x) ÷ (x − a) is f(a).","f(x) 除以 (x − a) 的餘式是 f(a)。"],gen(){
   const cs=[nz(-3,3),rnd(-5,5),rnd(-5,5),rnd(-6,6)],a=nz(-3,3);const v=cs[0]*a**3+cs[1]*a*a+cs[2]*a+cs[3];
-  return{text:`f(x) = ${poly(cs)}\nWhat is the remainder when f(x) is divided by x ${a<0?"+ "+(-a):"− "+a}?`,ans:v,sol:`f(${neg(a)}) = ${neg(v)}`}}},
-{k:"poly:factor",u:"poly",name:"Factor theorem",idea:"(x − a) is a factor of f(x) exactly when f(a) = 0.",gen(){
+  return{text:`f(x) = ${poly(cs)}\n`+L(`What is the remainder when f(x) is divided by ${xm(a)}?`,`f(x) 除以 ${xm(a)} 的餘式是多少？`),ans:v,sol:`f(${neg(a)}) = ${neg(v)}`}}},
+{k:"poly:factor",u:"poly",name:["Factor theorem","因式定理"],idea:["(x − a) is a factor of f(x) exactly when f(a) = 0.","(x − a) 是 f(x) 的因式 ⇔ f(a) = 0。"],gen(){
   const p=rnd(-4,4),q=rnd(-6,6),a=nz(-3,3);const kk=-(a**3+p*a*a+q*a);
-  return{text:`${xm(a)} is a factor of ${poly([1,p,q,0])} + k. What is k?`,ans:kk,sol:`f(${neg(a)}) = ${neg(a**3)} + ${par(p*a*a)} + ${par(q*a)} + k = 0 → k = ${neg(kk)}`}}},
-{k:"poly:vertex",u:"poly",name:"Vertex of a quadratic",idea:"y = ax² + bx + c has its vertex at x = −b ⁄ 2a. If a > 0 that is the minimum.",gen(){
+  return{text:L(`${xm(a)} is a factor of ${poly([1,p,q,0])} + k. What is k?`,`${xm(a)} 是 ${poly([1,p,q,0])} + k 的因式，k = ?`),ans:kk,sol:`f(${neg(a)}) = ${neg(a**3)} + ${par(p*a*a)} + ${par(q*a)} + k = 0 → k = ${neg(kk)}`}}},
+{k:"poly:vertex",u:"poly",name:["Vertex of a quadratic","二次函數的頂點"],idea:["y = ax² + bx + c has its vertex at x = −b ⁄ 2a. If a > 0 that is the minimum.","y = ax² + bx + c 的頂點在 x = −b ⁄ 2a；a > 0 時為最小值。"],gen(){
   const a=pick([1,2,3,-1,-2]),h=rnd(-5,5),k=rnd(-9,9);const cs=[a,-2*a*h,a*h*h+k];
-  if(Math.random()<.5)return{text:`y = ${poly(cs)}\nWhat is the ${a>0?"minimum":"maximum"} value of y?`,ans:k,sol:`Vertex x = −b ⁄ 2a = ${neg(h)}. y(${neg(h)}) = ${neg(k)}`};
-  return{text:`y = ${poly(cs)}\nAt what x is the vertex?`,ans:h,sol:`x = −(${neg(-2*a*h)}) ⁄ (2·${par(a)}) = ${neg(h)}`}}},
-{k:"poly:ineq",u:"poly",name:"Quadratic inequalities",idea:"For (x − r)(x − s) < 0 with r < s, the solution is r < x < s; for > 0 it is outside.",gen(){
-  const r=rnd(-6,3),s=rnd(r+2,r+8);const strict=Math.random()<.5;const cs=[1,-(r+s),r*s];
-  return{text:`How many integers x satisfy ${poly(cs)} ${strict?"<":"≤"} 0?`,ans:strict?s-r-1:s-r+1,sol:`Roots ${neg(r)} and ${neg(s)}; solution ${neg(r)} ${strict?"<":"≤"} x ${strict?"<":"≤"} ${neg(s)} → ${strict?s-r-1:s-r+1} integers.`}}},
-{k:"poly:vieta",u:"poly",name:"Roots and coefficients",idea:"For ax² + bx + c = 0 with roots α, β:  α + β = −b ⁄ a,  αβ = c ⁄ a.",gen(){
-  const a=pick([1,1,2,3]),b=rnd(-8,8),c=nz(-8,8);const S=F(-b,a),Pp=F(c,a);
-  if(Math.random()<.5){const ans=F(b*b-2*a*c,a*a);return{text:`α and β are roots of ${poly([a,b,c])} = 0. Find α² + β².`,ans,sol:`(α + β)² − 2αβ = (${fs(S)})² − 2(${fs(Pp)}) = ${fs(ans)}`}}
-  const ans=F(-b,c);return{text:`α and β are roots of ${poly([a,b,c])} = 0. Find 1⁄α + 1⁄β.`,ans,sol:`(α + β) ⁄ αβ = (${fs(S)}) ⁄ (${fs(Pp)}) = ${fs(ans)}`}}},
-{k:"poly:cubic",u:"poly",name:"Polynomial inequalities",idea:"Mark the roots on a number line; the sign of the product flips at each single root.",gen(){
-  const a=rnd(-5,0),b=rnd(a+2,a+4),c=rnd(b+2,b+5);const L=a-3,R=c+3;const cnt=(a-L)+(c-b-1);
-  return{text:`(${xm(a)})(${xm(b)})(${xm(c)}) < 0\nHow many integers x from ${neg(L)} to ${R} satisfy it?`,ans:cnt,sol:`Negative when x < ${neg(a)} or ${neg(b)} < x < ${neg(c)}. Integers: ${a-L} + ${c-b-1} = ${cnt}`}}},
+  if(Math.random()<.5)return{text:`y = ${poly(cs)}\n`+L(`What is the ${a>0?"minimum":"maximum"} value of y?`,`y 的${a>0?"最小":"最大"}值是多少？`),ans:k,sol:`x = −b ⁄ 2a = ${neg(h)} → y = ${neg(k)}`};
+  return{text:`y = ${poly(cs)}\n`+L("At what x is the vertex?","頂點的 x 坐標是多少？"),ans:h,sol:`x = −(${neg(-2*a*h)}) ⁄ (2·${par(a)}) = ${neg(h)}`}}},
+{k:"poly:ineq",u:"poly",name:["Quadratic inequalities","一元二次不等式"],idea:["For (x − r)(x − s) < 0 with r < s, the solution is r < x < s; for > 0 it is outside.","(x − r)(x − s) < 0（r < s）的解是 r < x < s；> 0 的解在兩根外側。"],gen(){
+  const r=rnd(-6,3),s=rnd(r+2,r+8);const strict=Math.random()<.5;const cs=[1,-(r+s),r*s];const n=strict?s-r-1:s-r+1;
+  return{text:L(`How many integers x satisfy ${poly(cs)} ${strict?"<":"≤"} 0?`,`滿足 ${poly(cs)} ${strict?"<":"≤"} 0 的整數 x 有幾個？`),ans:n,sol:`${neg(r)} ${strict?"<":"≤"} x ${strict?"<":"≤"} ${neg(s)} → ${n}`}}},
+{k:"poly:vieta",u:"poly",name:["Roots and coefficients","根與係數的關係"],idea:["For ax² + bx + c = 0 with roots α, β:  α + β = −b ⁄ a,  αβ = c ⁄ a.","ax² + bx + c = 0 的兩根 α、β：α + β = −b ⁄ a，αβ = c ⁄ a。"],gen(){
+  const a=pick([1,1,2,3]),b=rnd(-8,8),c=nz(-8,8);const Sm=F(-b,a),Pp=F(c,a);const giv=L(`α and β are roots of ${poly([a,b,c])} = 0. Find `,`α、β 為 ${poly([a,b,c])} = 0 的兩根，求 `);
+  if(Math.random()<.5){const ans=F(b*b-2*a*c,a*a);return{text:giv+"α² + β².",ans,sol:`(α + β)² − 2αβ = (${fs(Sm)})² − 2(${fs(Pp)}) = ${fs(ans)}`}}
+  const ans=F(-b,c);return{text:giv+"1⁄α + 1⁄β.",ans,sol:`(α + β) ⁄ αβ = (${fs(Sm)}) ⁄ (${fs(Pp)}) = ${fs(ans)}`}}},
+{k:"poly:cubic",u:"poly",name:["Polynomial inequalities","高次不等式"],idea:["Mark the roots on a number line; the sign of the product flips at each single root.","把根標在數線上，每經過一個單根，乘積的正負號就改變一次。"],gen(){
+  const a=rnd(-5,0),b=rnd(a+2,a+4),c=rnd(b+2,b+5);const Lo=a-3,R=c+3;const cnt=(a-Lo)+(c-b-1);
+  return{text:`(${xm(a)})(${xm(b)})(${xm(c)}) < 0\n`+L(`How many integers x from ${neg(Lo)} to ${R} satisfy it?`,`在 ${neg(Lo)} 到 ${R} 之間，滿足的整數 x 有幾個？`),ans:cnt,sol:`x < ${neg(a)}  ${L("or","或")}  ${neg(b)} < x < ${neg(c)} → ${a-Lo} + ${c-b-1} = ${cnt}`}}},
 // ---------- 數列與級數 ----------
-{k:"seq:an",u:"seq",name:"Arithmetic sequences",idea:"aₙ = a₁ + (n − 1)d.",gen(){
-  const a=rnd(-10,15),d=nz(-6,7),n=rnd(8,30);return{text:`An arithmetic sequence has a₁ = ${neg(a)} and common difference ${neg(d)}. What is a${sub(n)}?`,ans:a+(n-1)*d,sol:`${neg(a)} + ${n-1}·${par(d)} = ${neg(a+(n-1)*d)}`}}},
-{k:"seq:sn",u:"seq",name:"Arithmetic series",idea:"Sₙ = n(a₁ + aₙ) ⁄ 2.",gen(){
-  const a=rnd(-5,12),d=nz(-3,5),n=rnd(6,20);const an=a+(n-1)*d,S=n*(a+an)/2;
-  return{text:`Find the sum of the first ${n} terms of the arithmetic sequence ${neg(a)}, ${neg(a+d)}, ${neg(a+2*d)}, …`,ans:S,sol:`a${sub(n)} = ${neg(an)}. S = ${n}(${neg(a)} + ${par(an)}) ⁄ 2 = ${neg(S)}`}}},
-{k:"seq:gn",u:"seq",name:"Geometric sequences",idea:"aₙ = a₁ · rⁿ⁻¹.",gen(){
-  const a=pick([1,2,3,-1,-2,5]),r=pick([2,3,-2,-3]),n=rnd(4,7);return{text:`A geometric sequence has a₁ = ${neg(a)} and ratio ${neg(r)}. What is a${sub(n)}?`,ans:a*r**(n-1),sol:`${neg(a)} · ${par(r)}^${n-1} = ${neg(a*r**(n-1))}`}}},
-{k:"seq:gs",u:"seq",name:"Geometric series",idea:"Sₙ = a₁(rⁿ − 1) ⁄ (r − 1), for r ≠ 1.",gen(){
-  const a=pick([1,2,3,5]),r=pick([2,3]),n=rnd(4,7);const S=a*(r**n-1)/(r-1);
-  return{text:`Find ${a} + ${a*r} + ${a*r*r} + … (${n} terms).`,ans:S,sol:`${a}(${r}^${n} − 1) ⁄ (${r} − 1) = ${S}`}}},
-{k:"seq:sigma",u:"seq",name:"Sigma notation",idea:"Σk = n(n + 1) ⁄ 2,  Σk² = n(n + 1)(2n + 1) ⁄ 6,  Σc = cn.",gen(){
-  const n=rnd(5,12);if(Math.random()<.5){const a=nz(-4,5),b=rnd(-6,6);const S=a*n*(n+1)/2+b*n;return{text:`Σ (k = 1 to ${n}) of (${poly([a,b],"k")})`,ans:S,sol:`${a}·${n*(n+1)/2} + ${par(b)}·${n} = ${neg(S)}`}}
-  const S=n*(n+1)*(2*n+1)/6;return{text:`Σ (k = 1 to ${n}) of k²`,ans:S,sol:`${n}·${n+1}·${2*n+1} ⁄ 6 = ${S}`}}},
-{k:"seq:rec",u:"seq",name:"Recursive sequences",idea:"Build terms one at a time from the rule.",gen(){
-  const a1=rnd(-3,5),t=rnd(0,1);if(t===0){const m=pick([2,3]),c=rnd(-3,3);let v=a1;const steps=[v];for(let i=0;i<4;i++){v=m*v+c;steps.push(v)}
-    return{text:`a₁ = ${neg(a1)},  aₙ₊₁ = ${m}aₙ${c?sgn(c):""}.  What is a₅?`,ans:v,sol:steps.map(neg).join(", ")}}
-  let v=a1;const steps=[v];for(let n=1;n<5;n++){v=v+n;steps.push(v)}return{text:`a₁ = ${neg(a1)},  aₙ₊₁ = aₙ + n.  What is a₅?`,ans:v,sol:steps.map(neg).join(", ")}}},
+{k:"seq:an",u:"seq",name:["Arithmetic sequences","等差數列"],idea:["aₙ = a₁ + (n − 1)d.","aₙ = a₁ + (n − 1)d。"],gen(){
+  const a=rnd(-10,15),d=nz(-6,7),n=rnd(8,30);return{text:L(`An arithmetic sequence has a₁ = ${neg(a)} and common difference ${neg(d)}. What is a${sub(n)}?`,`等差數列 a₁ = ${neg(a)}、公差 ${neg(d)}，a${sub(n)} = ?`),ans:a+(n-1)*d,sol:`${neg(a)} + ${n-1}·${par(d)} = ${neg(a+(n-1)*d)}`}}},
+{k:"seq:sn",u:"seq",name:["Arithmetic series","等差級數"],idea:["Sₙ = n(a₁ + aₙ) ⁄ 2.","Sₙ = n(a₁ + aₙ) ⁄ 2。"],gen(){
+  const a=rnd(-5,12),d=nz(-3,5),n=rnd(6,20);const an=a+(n-1)*d,Sx=n*(a+an)/2;
+  return{text:L(`Find the sum of the first ${n} terms of the arithmetic sequence ${neg(a)}, ${neg(a+d)}, ${neg(a+2*d)}, …`,`求等差數列 ${neg(a)}, ${neg(a+d)}, ${neg(a+2*d)}, … 前 ${n} 項的和。`),ans:Sx,sol:`a${sub(n)} = ${neg(an)};  ${n}(${neg(a)} + ${par(an)}) ⁄ 2 = ${neg(Sx)}`}}},
+{k:"seq:gn",u:"seq",name:["Geometric sequences","等比數列"],idea:["aₙ = a₁ · rⁿ⁻¹.","aₙ = a₁ · rⁿ⁻¹。"],gen(){
+  const a=pick([1,2,3,-1,-2,5]),r=pick([2,3,-2,-3]),n=rnd(4,7);return{text:L(`A geometric sequence has a₁ = ${neg(a)} and ratio ${neg(r)}. What is a${sub(n)}?`,`等比數列 a₁ = ${neg(a)}、公比 ${neg(r)}，a${sub(n)} = ?`),ans:a*r**(n-1),sol:`${neg(a)} · ${par(r)}^${n-1} = ${neg(a*r**(n-1))}`}}},
+{k:"seq:gs",u:"seq",name:["Geometric series","等比級數"],idea:["Sₙ = a₁(rⁿ − 1) ⁄ (r − 1), for r ≠ 1.","Sₙ = a₁(rⁿ − 1) ⁄ (r − 1)（r ≠ 1）。"],gen(){
+  const a=pick([1,2,3,5]),r=pick([2,3]),n=rnd(4,7);const Sx=a*(r**n-1)/(r-1);
+  return{text:L(`Find ${a} + ${a*r} + ${a*r*r} + … (${n} terms).`,`求 ${a} + ${a*r} + ${a*r*r} + …（共 ${n} 項）。`),ans:Sx,sol:`${a}(${r}^${n} − 1) ⁄ (${r} − 1) = ${Sx}`}}},
+{k:"seq:sigma",u:"seq",name:["Sigma notation","Σ 符號"],idea:["Σk = n(n + 1) ⁄ 2,  Σk² = n(n + 1)(2n + 1) ⁄ 6,  Σc = cn.","Σk = n(n + 1) ⁄ 2，Σk² = n(n + 1)(2n + 1) ⁄ 6，Σc = cn。"],gen(){
+  const n=rnd(5,12);if(Math.random()<.5){const a=nz(-4,5),b=rnd(-6,6);const Sx=a*n*(n+1)/2+b*n;return{text:`Σ (k = 1 → ${n}) (${poly([a,b],"k")})`,ans:Sx,sol:`${a}·${n*(n+1)/2} + ${par(b)}·${n} = ${neg(Sx)}`}}
+  const Sx=n*(n+1)*(2*n+1)/6;return{text:`Σ (k = 1 → ${n}) k²`,ans:Sx,sol:`${n}·${n+1}·${2*n+1} ⁄ 6 = ${Sx}`}}},
+{k:"seq:rec",u:"seq",name:["Recursive sequences","遞迴數列"],idea:["Build terms one at a time from the rule.","依照遞迴關係一項一項算出來。"],gen(){
+  const a1=rnd(-3,5),t=rnd(0,1);if(t===0){const m=pick([2,3]),c=rnd(-3,3);let v=a1;const st=[v];for(let i=0;i<4;i++){v=m*v+c;st.push(v)}
+    return{text:`a₁ = ${neg(a1)},  aₙ₊₁ = ${m}aₙ${c?sgn(c):""}.  a₅ = ?`,ans:v,sol:st.map(neg).join(", ")}}
+  let v=a1;const st=[v];for(let n=1;n<5;n++){v=v+n;st.push(v)}return{text:`a₁ = ${neg(a1)},  aₙ₊₁ = aₙ + n.  a₅ = ?`,ans:v,sol:st.map(neg).join(", ")}}},
 // ---------- 數據分析 ----------
-{k:"stat:center",u:"stat",name:"Mean and median",idea:"Mean = sum ⁄ count. Median = middle value after sorting.",gen(){
+{k:"stat:center",u:"stat",name:["Mean and median","平均數與中位數"],idea:["Mean = sum ⁄ count. Median = middle value after sorting.","平均數 = 總和 ⁄ 個數。中位數 = 排序後正中間的數。"],gen(){
   const n=pick([7,9]);const xs=Array.from({length:n},()=>rnd(1,30));
-  if(Math.random()<.5){const s=[...xs].sort((a,b)=>a-b);return{text:`Data: ${xs.join(", ")}\nWhat is the median?`,ans:s[(n-1)/2],sol:`Sorted: ${s.join(", ")} → middle value ${s[(n-1)/2]}`}}
+  if(Math.random()<.5){const s=[...xs].sort((a,b)=>a-b);return{text:L("Data: ","資料：")+xs.join(", ")+"\n"+L("What is the median?","中位數是多少？"),ans:s[(n-1)/2],sol:`${s.join(", ")} → ${s[(n-1)/2]}`}}
   const m=rnd(8,20);const sum=xs.slice(0,-1).reduce((a,b)=>a+b,0);let last=m*n-sum;if(last<0||last>60){xs.fill(m);last=m}xs[n-1]=last;
-  return{text:`Data: ${xs.join(", ")}\nWhat is the mean?`,ans:m,sol:`Sum = ${m*n}, count = ${n} → mean ${m}`}}},
-{k:"stat:sd",u:"stat",name:"Standard deviation",idea:"σ = √( Σ(xᵢ − μ)² ⁄ n ). It measures how far data spread from the mean.",gen(){
+  return{text:L("Data: ","資料：")+xs.join(", ")+"\n"+L("What is the mean?","平均數是多少？"),ans:m,sol:`${m*n} ÷ ${n} = ${m}`}}},
+{k:"stat:sd",u:"stat",name:["Standard deviation","標準差"],idea:["σ = √( Σ(xᵢ − μ)² ⁄ n ). It measures how far data spread from the mean.","σ = √( Σ(xᵢ − μ)² ⁄ n )，表示資料離平均數的分散程度。"],gen(){
   const m=rnd(5,20),d=rnd(1,6),k=rnd(2,4);const xs=[];for(let i=0;i<k;i++){xs.push(m-d,m+d)}xs.sort(()=>Math.random()-.5);
-  return{text:`Data: ${xs.join(", ")}\nWhat is the (population) standard deviation?`,ans:d,sol:`Mean ${m}; every value is ${d} away from it, so σ = √(${d}²) = ${d}`}}},
-{k:"stat:lin",u:"stat",name:"Linear transformations of data",idea:"If y = ax + b: mean(y) = a·mean(x) + b, SD(y) = |a|·SD(x).",gen(){
-  const mu=rnd(40,80),sd=rnd(2,12),a=pick([2,3,-1,-2,5]),b=rnd(-20,20);
-  if(Math.random()<.5)return{text:`Scores x have mean ${mu} and SD ${sd}. New scores y = ${tm(a,"x")}${b?sgn(b):""}. What is the mean of y?`,ans:a*mu+b,sol:`${par(a)}·${mu}${b?sgn(b):""} = ${neg(a*mu+b)}`};
-  return{text:`Scores x have mean ${mu} and SD ${sd}. New scores y = ${tm(a,"x")}${b?sgn(b):""}. What is the SD of y?`,ans:Math.abs(a)*sd,sol:`|${neg(a)}|·${sd} = ${Math.abs(a)*sd} (adding a constant doesn't change spread)`}}},
-{k:"stat:reg",u:"stat",name:"Regression line",idea:"Least-squares line: slope = r · σᵧ ⁄ σₓ, and it passes through (x̄, ȳ).",gen(){
-  const [rn,rd]=pick([[1,2],[3,5],[4,5],[-1,2],[-4,5]]),sx=pick([2,3,4,5]),sy=pick([2,4,6,10]),xm=rnd(2,10),ym=rnd(10,40);const m=F(rn*sy,rd*sx);
-  if(Math.random()<.6)return{text:`r = ${fs(F(rn,rd))}, σₓ = ${sx}, σᵧ = ${sy}. What is the slope of the regression line of y on x?`,ans:m,sol:`${fs(F(rn,rd))} · ${sy} ⁄ ${sx} = ${fs(m)}`};
-  const b=F(ym*m.d-m.n*xm,m.d);return{text:`r = ${fs(F(rn,rd))}, σₓ = ${sx}, σᵧ = ${sy}, x̄ = ${xm}, ȳ = ${ym}. What is the y-intercept of the regression line?`,ans:b,sol:`slope = ${fs(m)}; b = ȳ − slope·x̄ = ${ym} − ${fs(m)}·${xm} = ${fs(b)}`}}},
+  return{text:L("Data: ","資料：")+xs.join(", ")+"\n"+L("What is the (population) standard deviation?","（母體）標準差是多少？"),ans:d,sol:L(`Mean ${m}; every value is ${d} away from it, so σ = ${d}`,`平均數 ${m}，每個數都與它相差 ${d}，所以 σ = ${d}`)}}},
+{k:"stat:lin",u:"stat",name:["Linear transformations of data","資料的線性變換"],idea:["If y = ax + b: mean(y) = a·mean(x) + b, SD(y) = |a|·SD(x).","若 y = ax + b：y 的平均 = a·(x 的平均) + b，y 的標準差 = |a|·(x 的標準差)。"],gen(){
+  const mu=rnd(40,80),sd=rnd(2,12),a=pick([2,3,-1,-2,5]),b=rnd(-20,20);const giv=L(`Scores x have mean ${mu} and SD ${sd}. New scores y = ${tm(a,"x")}${b?sgn(b):""}. `,`分數 x 的平均 ${mu}、標準差 ${sd}。新分數 y = ${tm(a,"x")}${b?sgn(b):""}，`);
+  if(Math.random()<.5)return{text:giv+L("What is the mean of y?","y 的平均是多少？"),ans:a*mu+b,sol:`${par(a)}·${mu}${b?sgn(b):""} = ${neg(a*mu+b)}`};
+  return{text:giv+L("What is the SD of y?","y 的標準差是多少？"),ans:Math.abs(a)*sd,sol:`|${neg(a)}|·${sd} = ${Math.abs(a)*sd}`}}},
+{k:"stat:reg",u:"stat",name:["Regression line","迴歸直線"],idea:["Least-squares line: slope = r · σᵧ ⁄ σₓ, and it passes through (x̄, ȳ).","最適直線的斜率 = r · σᵧ ⁄ σₓ，且通過 (x̄, ȳ)。"],gen(){
+  const [rn,rd]=pick([[1,2],[3,5],[4,5],[-1,2],[-4,5]]),sx=pick([2,3,4,5]),sy=pick([2,4,6,10]),xb=rnd(2,10),yb=rnd(10,40);const m=F(rn*sy,rd*sx);
+  if(Math.random()<.6)return{text:`r = ${fs(F(rn,rd))}, σₓ = ${sx}, σᵧ = ${sy}.\n`+L("What is the slope of the regression line of y on x?","y 對 x 的迴歸直線斜率是多少？"),ans:m,sol:`${fs(F(rn,rd))} · ${sy} ⁄ ${sx} = ${fs(m)}`};
+  const b=F(yb*m.d-m.n*xb,m.d);return{text:`r = ${fs(F(rn,rd))}, σₓ = ${sx}, σᵧ = ${sy}, x̄ = ${xb}, ȳ = ${yb}.\n`+L("What is the y-intercept of the regression line?","迴歸直線的 y 截距是多少？"),ans:b,sol:`${L("slope","斜率")} = ${fs(m)};  ${yb} − ${fs(m)}·${xb} = ${fs(b)}`}}},
 // ---------- 排列組合 ----------
-{k:"count:perm",u:"count",name:"Permutations",idea:"Ordered choices: P(n, k) = n! ⁄ (n − k)!.",gen(){
-  const n=rnd(5,9),k=rnd(2,4);return{text:`${n} runners. In how many ways can 1st, 2nd${k>2?", 3rd":""}${k>3?" and 4th":""} place be awarded?`.replace("2nd,","2nd,"),ans:P(n,k),sol:`P(${n}, ${k}) = ${Array.from({length:k},(_,i)=>n-i).join(" × ")} = ${P(n,k)}`}}},
-{k:"count:comb",u:"count",name:"Combinations",idea:"Unordered choices: C(n, k) = n! ⁄ (k!(n − k)!).",gen(){
-  const n=rnd(6,12),k=rnd(2,4);return{text:`In how many ways can a team of ${k} be chosen from ${n} people?`,ans:C(n,k),sol:`C(${n}, ${k}) = ${C(n,k)}`}}},
-{k:"count:rep",u:"count",name:"Arrangements with repeats",idea:"Arrangements of n items with repeats a, b, … = n! ⁄ (a!·b!·…).",gen(){
-  const w=pick(["BANANA","LETTER","PEPPER","COFFEE","SUCCESS","BALLOON","CANADA","TOMATO","ADDED","LEVEL"]);const cnt={};[...w].forEach(c=>cnt[c]=(cnt[c]||0)+1);
-  const rep=Object.values(cnt).filter(v=>v>1);const ans=fact(w.length)/rep.reduce((a,v)=>a*fact(v),1);
-  return{text:`How many different arrangements of the letters in ${w} are there?`,ans,sol:`${w.length}! ⁄ (${rep.map(v=>v+"!").join("·")}) = ${ans}`}}},
-{k:"count:adj",u:"count",name:"Together and apart",idea:"Keep two people together by treating them as one block (×2 for their order). 'Apart' = total − together.",gen(){
-  const n=rnd(5,7),tog=2*fact(n-1);if(Math.random()<.5)return{text:`${n} people stand in a line. A and B must stand next to each other. How many arrangements?`,ans:tog,sol:`Block AB: ${n-1}! · 2 = ${tog}`};
-  return{text:`${n} people stand in a line. A and B must NOT stand next to each other. How many arrangements?`,ans:fact(n)-tog,sol:`${n}! − ${n-1}!·2 = ${fact(n)} − ${tog} = ${fact(n)-tog}`}}},
-{k:"count:grid",u:"count",name:"Grid paths",idea:"Moving only right or up on an m × n grid: choose which m of the m + n steps go right → C(m + n, m).",gen(){
-  const m=rnd(2,6),n=rnd(2,5);return{text:`On a grid, you move only right or up from (0, 0) to (${m}, ${n}). How many shortest paths are there?`,ans:C(m+n,m),sol:`C(${m+n}, ${m}) = ${C(m+n,m)}`}}},
-{k:"count:binom",u:"count",name:"Binomial theorem",idea:"(x + a)ⁿ = Σ C(n, k)·xᵏ·aⁿ⁻ᵏ.",gen(){
-  const n=rnd(4,6),a=pick([1,2,-1,-2,3]),k=rnd(1,n-1);const ans=C(n,k)*a**(n-k);
-  return{text:`What is the coefficient of x${k===1?"":sup(k)} in (x ${a<0?"− "+(-a):"+ "+a})${sup(n)}?`,ans,sol:`C(${n}, ${k})·${par(a)}^${n-k} = ${C(n,k)}·${par(a**(n-k))} = ${neg(ans)}`}}},
+{k:"count:perm",u:"count",name:["Permutations","排列"],idea:["Ordered choices: P(n, k) = n! ⁄ (n − k)!.","有順序的選取：P(n, k) = n! ⁄ (n − k)!。"],gen(){
+  const n=rnd(5,9),k=rnd(2,4);const places=["1st","2nd","3rd","4th"].slice(0,k).join(", ");
+  return{text:L(`${n} runners. In how many ways can ${places} place be awarded?`,`${n} 位選手比賽，前 ${k} 名的名次有幾種可能？`),ans:P(n,k),sol:`P(${n}, ${k}) = ${Array.from({length:k},(_,i)=>n-i).join(" × ")} = ${P(n,k)}`}}},
+{k:"count:comb",u:"count",name:["Combinations","組合"],idea:["Unordered choices: C(n, k) = n! ⁄ (k!(n − k)!).","不計順序的選取：C(n, k) = n! ⁄ (k!(n − k)!)。"],gen(){
+  const n=rnd(6,12),k=rnd(2,4);return{text:L(`In how many ways can a team of ${k} be chosen from ${n} people?`,`從 ${n} 人中選出 ${k} 人組成一隊，有幾種選法？`),ans:C(n,k),sol:`C(${n}, ${k}) = ${C(n,k)}`}}},
+{k:"count:rep",u:"count",name:["Arrangements with repeats","不盡相異物的排列"],idea:["Arrangements of n items with repeats a, b, … = n! ⁄ (a!·b!·…).","n 個物品中有 a 個相同、b 個相同…，排列數 = n! ⁄ (a!·b!·…)。"],gen(){
+  const wd=pick(["BANANA","LETTER","PEPPER","COFFEE","SUCCESS","BALLOON","CANADA","TOMATO","ADDED","LEVEL"]);const cnt={};[...wd].forEach(c=>cnt[c]=(cnt[c]||0)+1);
+  const rep=Object.values(cnt).filter(v=>v>1);const ans=fact(wd.length)/rep.reduce((a,v)=>a*fact(v),1);
+  return{text:L(`How many different arrangements of the letters in ${wd} are there?`,`把 ${wd} 的字母重新排列，共有幾種不同的排法？`),ans,sol:`${wd.length}! ⁄ (${rep.map(v=>v+"!").join("·")}) = ${ans}`}}},
+{k:"count:adj",u:"count",name:["Together and apart","相鄰與不相鄰"],idea:["Keep two people together by treating them as one block (×2 for their order). 'Apart' = total − together.","相鄰：把兩人綁成一組（組內 ×2）。不相鄰 = 全部 − 相鄰。"],gen(){
+  const n=rnd(5,7),tog=2*fact(n-1);if(Math.random()<.5)return{text:L(`${n} people stand in a line. A and B must stand next to each other. How many arrangements?`,`${n} 人排成一列，A、B 必須相鄰，有幾種排法？`),ans:tog,sol:`${n-1}! · 2 = ${tog}`};
+  return{text:L(`${n} people stand in a line. A and B must NOT stand next to each other. How many arrangements?`,`${n} 人排成一列，A、B 不可相鄰，有幾種排法？`),ans:fact(n)-tog,sol:`${n}! − ${n-1}!·2 = ${fact(n)} − ${tog} = ${fact(n)-tog}`}}},
+{k:"count:grid",u:"count",name:["Grid paths","捷徑問題"],idea:["Moving only right or up on an m × n grid: choose which m of the m + n steps go right → C(m + n, m).","只能向右或向上走：在 m + n 步中選出 m 步向右，共 C(m + n, m) 種。"],gen(){
+  const m=rnd(2,6),n=rnd(2,5);return{text:L(`On a grid, you move only right or up from (0, 0) to (${m}, ${n}). How many shortest paths are there?`,`在方格上只能向右或向上，從 (0, 0) 走到 (${m}, ${n}) 的最短路徑有幾條？`),ans:C(m+n,m),sol:`C(${m+n}, ${m}) = ${C(m+n,m)}`}}},
+{k:"count:binom",u:"count",name:["Binomial theorem","二項式定理"],idea:["(x + a)ⁿ = Σ C(n, k)·xᵏ·aⁿ⁻ᵏ.","(x + a)ⁿ = Σ C(n, k)·xᵏ·aⁿ⁻ᵏ。"],gen(){
+  const n=rnd(4,6),a=pick([1,2,-1,-2,3]),k=rnd(1,n-1);const ans=C(n,k)*a**(n-k);const term=`x${k===1?"":sup(k)}`,ex=`(x ${a<0?"− "+(-a):"+ "+a})${sup(n)}`;
+  return{text:L(`What is the coefficient of ${term} in ${ex}?`,`${ex} 展開式中 ${term} 的係數是多少？`),ans,sol:`C(${n}, ${k})·${par(a)}^${n-k} = ${C(n,k)}·${par(a**(n-k))} = ${neg(ans)}`}}},
 // ---------- 機率 ----------
-{k:"prob:dice",u:"prob",name:"Two dice",idea:"There are 36 equally likely outcomes. Count the ones you want.",gen(){
+{k:"prob:dice",u:"prob",name:["Two dice","擲兩顆骰子"],idea:["There are 36 equally likely outcomes. Count the ones you want.","共有 36 種等可能的結果，數出符合條件的有幾種。"],gen(){
   const s=rnd(3,11);let c=0;for(let i=1;i<=6;i++)for(let j=1;j<=6;j++)if(i+j===s)c++;
-  if(Math.random()<.5)return{text:`Two fair dice are rolled. What is the probability the sum is ${s}?`,ans:F(c,36),sol:`${c} outcomes out of 36 = ${fs(F(c,36))}`};
-  let g=0;for(let i=1;i<=6;i++)for(let j=1;j<=6;j++)if(i+j>=s)g++;return{text:`Two fair dice are rolled. What is the probability the sum is at least ${s}?`,ans:F(g,36),sol:`${g} outcomes out of 36 = ${fs(F(g,36))}`}}},
-{k:"prob:balls",u:"prob",name:"Drawing without replacement",idea:"Probability = favourable choices ⁄ all choices, using combinations.",gen(){
-  const r=rnd(2,6),b=rnd(2,6),T=C(r+b,2);
-  if(Math.random()<.5)return{text:`A bag has ${r} red and ${b} blue balls. Two are drawn at once. What is the probability both are red?`,ans:F(C(r,2),T),sol:`C(${r}, 2) ⁄ C(${r+b}, 2) = ${C(r,2)} ⁄ ${T} = ${fs(F(C(r,2),T))}`};
-  return{text:`A bag has ${r} red and ${b} blue balls. Two are drawn at once. What is the probability of one of each color?`,ans:F(r*b,T),sol:`${r}·${b} ⁄ C(${r+b}, 2) = ${r*b} ⁄ ${T} = ${fs(F(r*b,T))}`}}},
-{k:"prob:comp",u:"prob",name:"At least one",idea:"P(at least one) = 1 − P(none).",gen(){
-  if(Math.random()<.5){const n=rnd(2,5);return{text:`A fair coin is flipped ${n} times. What is the probability of at least one head?`,ans:F(2**n-1,2**n),sol:`1 − (1⁄2)^${n} = ${fs(F(2**n-1,2**n))}`}}
-  const n=rnd(2,3);return{text:`A fair die is rolled ${n} times. What is the probability of at least one 6?`,ans:F(6**n-5**n,6**n),sol:`1 − (5⁄6)^${n} = ${fs(F(6**n-5**n,6**n))}`}}},
-{k:"prob:ev",u:"prob",name:"Expected value",idea:"E = Σ (value × probability).",gen(){
-  const k=rnd(1,3),W=rnd(2,10)*5,L=rnd(1,5)*5;const ans=F(k*W-(6-k)*L,6);
-  return{text:`Roll a fair die. If it shows 1${k>1?" to "+k:""}, you win $${W}; otherwise you lose $${L}. What is the expected value (in $)?`,ans,sol:`${k}⁄6·${W} − ${6-k}⁄6·${L} = ${fs(ans)}`}}},
+  if(Math.random()<.5)return{text:L(`Two fair dice are rolled. What is the probability the sum is ${s}?`,`擲兩顆公正骰子，點數和為 ${s} 的機率是多少？`),ans:F(c,36),sol:`${c} ⁄ 36 = ${fs(F(c,36))}`};
+  let g=0;for(let i=1;i<=6;i++)for(let j=1;j<=6;j++)if(i+j>=s)g++;return{text:L(`Two fair dice are rolled. What is the probability the sum is at least ${s}?`,`擲兩顆公正骰子，點數和至少為 ${s} 的機率是多少？`),ans:F(g,36),sol:`${g} ⁄ 36 = ${fs(F(g,36))}`}}},
+{k:"prob:balls",u:"prob",name:["Drawing without replacement","取球（不放回）"],idea:["Probability = favourable choices ⁄ all choices, using combinations.","機率 = 符合的取法數 ⁄ 全部取法數（用組合計算）。"],gen(){
+  const r=rnd(2,6),b=rnd(2,6),T=C(r+b,2);const giv=L(`A bag has ${r} red and ${b} blue balls. Two are drawn at once. `,`袋中有紅球 ${r} 顆、藍球 ${b} 顆，一次取出 2 顆，`);
+  if(Math.random()<.5)return{text:giv+L("What is the probability both are red?","兩顆都是紅球的機率是多少？"),ans:F(C(r,2),T),sol:`C(${r}, 2) ⁄ C(${r+b}, 2) = ${C(r,2)} ⁄ ${T} = ${fs(F(C(r,2),T))}`};
+  return{text:giv+L("What is the probability of one of each color?","一紅一藍的機率是多少？"),ans:F(r*b,T),sol:`${r}·${b} ⁄ C(${r+b}, 2) = ${r*b} ⁄ ${T} = ${fs(F(r*b,T))}`}}},
+{k:"prob:comp",u:"prob",name:["At least one","「至少一次」"],idea:["P(at least one) = 1 − P(none).","P(至少一次) = 1 − P(一次都沒有)。"],gen(){
+  if(Math.random()<.5){const n=rnd(2,5);return{text:L(`A fair coin is flipped ${n} times. What is the probability of at least one head?`,`公正硬幣擲 ${n} 次，至少出現一次正面的機率是多少？`),ans:F(2**n-1,2**n),sol:`1 − (1⁄2)^${n} = ${fs(F(2**n-1,2**n))}`}}
+  const n=rnd(2,3);return{text:L(`A fair die is rolled ${n} times. What is the probability of at least one 6?`,`公正骰子擲 ${n} 次，至少出現一次 6 點的機率是多少？`),ans:F(6**n-5**n,6**n),sol:`1 − (5⁄6)^${n} = ${fs(F(6**n-5**n,6**n))}`}}},
+{k:"prob:ev",u:"prob",name:["Expected value","期望值"],idea:["E = Σ (value × probability).","期望值 = Σ（金額 × 機率）。"],gen(){
+  const k=rnd(1,3),W=rnd(2,10)*5,Ls=rnd(1,5)*5;const ans=F(k*W-(6-k)*Ls,6);const face=k>1?"1–"+k:"1";
+  return{text:L(`Roll a fair die. If it shows ${face}, you win $${W}; otherwise you lose $${Ls}. What is the expected value (in $)?`,`擲一顆公正骰子，出現 ${face} 點可贏 ${W} 元，否則輸 ${Ls} 元。期望值是多少元？`),ans,sol:`${k}⁄6·${W} − ${6-k}⁄6·${Ls} = ${fs(ans)}`}}},
 ];
-function sub(n){return String(n).split("").map(c=>"₀₁₂₃₄₅₆₇₈₉"[+c]).join("")}
-function sup(n){return String(n).split("").map(c=>"⁰¹²³⁴⁵⁶⁷⁸⁹"[+c]).join("")}
 const IDX={};SKILLS.forEach((s,i)=>IDX[s.k]=i);
 
-// ===== Math Prep — Taiwan 高一 math practice with spaced repetition =====
-const APP_VERSION="2026-11-02a";
-const KEY="mathprep-v1";
+// ===== Shared engine for Math Prep / Math Pitch — bilingual (EN / 繁中). Expects CFG, SKILLS, UNITS, SEM1, SEM2, L, F, fs. =====
+const {APPID,KEY,APP_VERSION}=CFG;
 const DAY=86400000;
 const INTERVALS=[0,1,3,7,14,30];
-const LEVELS=[[0,"Beginner","🥚"],[250,"Learner","🍳"],[600,"Practiced","🥖"],[1200,"Skilled","🥘"],[2200,"Advanced","🍰"],[3600,"Expert","🎂"],[5500,"Master","🧑‍🍳"]];
-const BADGES=[
- ["first","First session","🥄","Finish your first session"],
- ["checked","Taste test","🔍","Finish a unit check"],
- ["s7","7-day streak","🔥","Study 7 days in a row"],
- ["s21","21-day streak","🌶️","Study 21 days in a row"],
- ["sem1","高一上 covered","🍱","Every 高一上 skill learned"],
- ["sem2","高一下 covered","🍽️","Every 高一下 skill learned"],
- ["m20","20 mastered","🧁","Master 20 skills"],
- ["perfect","Perfect session","⭐","A session with zero mistakes (8+ questions)"],
-];
+const LEVELS=CFG.levels, BADGES=CFG.badges;
 
 // ---------- state ----------
 const todayKey=d=>{d=d||new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
-const fresh=()=>({v:1,name:"",goal:"2027-06-30",perDay:2,xp:0,streak:0,best:0,last:"",freezeUsed:"",badges:[],w:{},hist:{},check:{},reportUrl:"",pending:false,updated:0});
+const fresh=()=>({v:1,name:"",goal:CFG.goal,perDay:2,xp:0,streak:0,best:0,last:"",freezeUsed:"",badges:[],w:{},hist:{},check:{},theme:"mix",lang:CFG.lang||"en",reportUrl:"",token:"",pending:false,updated:0});
 let S=fresh();
 function load(){try{const j=localStorage.getItem(KEY);if(j)S=Object.assign(fresh(),JSON.parse(j))}catch(e){}}
 function save(){S.updated=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 const ws=k=>S.w[k]||{b:0,d:0,l:0,c:0};
 const mastered=k=>(S.w[k]||{}).b>=4;
 const learned=k=>(S.w[k]||{}).b>=1;
+const nm=s=>L(s.name[0],s.name[1]);
+const idea=s=>L(s.idea[0],s.idea[1]);
+const unitName=u=>L(u[1],u[2]);
+const unitFull=u=>L(`${u[1]} · ${u[2]}`,u[2]);
 function dueList(){const now=Date.now();return SKILLS.map(s=>s.k).filter(k=>ws(k).b>0&&ws(k).d<=now)}
 function unseen(){return SKILLS.filter(s=>ws(s.k).b===0).map(s=>s.k)}
 function masteredCount(){return SKILLS.filter(s=>mastered(s.k)).length}
@@ -369,27 +377,54 @@ function touchStreak(){const t=todayKey();if(S.last===t)return;const y=todayKey(
   if(S.last===y)S.streak++;else if(S.last===y2&&S.freezeUsed!==weekKey()){S.streak++;S.freezeUsed=weekKey()}else S.streak=1;S.last=t;S.best=Math.max(S.best,S.streak)}
 function logHist(k,n){const t=todayKey();S.hist[t]=S.hist[t]||{q:0,ok:0,nw:0,xp:0};S.hist[t][k]=(S.hist[t][k]||0)+n}
 function daysToGoal(){return Math.ceil((new Date(S.goal+"T00:00:00")-new Date())/DAY)}
-function level(){let L=LEVELS[0],next=null;for(let i=0;i<LEVELS.length;i++)if(S.xp>=LEVELS[i][0]){L=LEVELS[i];next=LEVELS[i+1]||null}return{L,next}}
+function level(){let Lv=LEVELS[0],next=null;for(let i=0;i<LEVELS.length;i++)if(S.xp>=LEVELS[i][0]){Lv=LEVELS[i];next=LEVELS[i+1]||null}return{Lv,next}}
+const lvName=l=>L(l[1],l[2]);
 const unitOf=k=>UNITS.find(u=>u[0]===SKILLS[IDX[k]].u);
-const semSkills=sem=>SKILLS.filter(s=>{const u=UNITS.find(x=>x[0]===s.u);return sem==="上"?(u[3]==="高一上"||u[3]==="Before 高一"):u[3]==="高一下"});
-function addBadge(id){if(!S.badges.includes(id)){S.badges.push(id);toast("🏅 "+BADGES.find(b=>b[0]===id)[1])}}
+const semSkills=w=>SKILLS.filter(s=>(w===1?SEM1:SEM2).includes(UNITS.find(x=>x[0]===s.u)[3]));
+const bName=b=>L(b[1],b[2]);
+function addBadge(id){if(!S.badges.includes(id)){S.badges.push(id);toast("🏅 "+bName(BADGES.find(b=>b[0]===id)))}}
 function checkBadges(){if(S.streak>=7)addBadge("s7");if(S.streak>=21)addBadge("s21");if(masteredCount()>=20)addBadge("m20");
-  if(semSkills("上").every(s=>learned(s.k)))addBadge("sem1");if(semSkills("下").every(s=>learned(s.k)))addBadge("sem2")}
+  if(semSkills(1).every(s=>learned(s.k)))addBadge("sem1");if(semSkills(2).every(s=>learned(s.k)))addBadge("sem2")}
 function pace(){const left=unseen().length,d=daysToGoal(),days=Math.max(1,Math.round((d-14)*6/7));return{left,d,rec:Math.min(6,Math.max(1,Math.ceil(left/days)))}}
 
 // ---------- answers ----------
 function toRat(x){if(typeof x==="number")return{n:x,d:1};return x}
 function parseAns(str){str=str.replace(/−/g,"-").trim();if(!str)return null;
   if(/^-?\d+\/-?\d+$/.test(str)){const [a,b]=str.split("/").map(Number);if(b===0)return null;return F(a,b)}
-  if(/^-?\d*\.?\d+$/.test(str)){const neg=str.startsWith("-");const t=str.replace("-","");const [i,f=""]=t.split(".");const d=10**f.length;return F((neg?-1:1)*(Number(i||0)*d+Number(f||0)),d)}
+  if(/^-?\d*\.?\d+$/.test(str)){const ng=str.startsWith("-");const t=str.replace("-","");const [i,f=""]=t.split(".");const d=10**f.length;return F((ng?-1:1)*(Number(i||0)*d+Number(f||0)),d)}
   return null}
 function sameAns(v,ans){const a=toRat(ans);return v&&v.n*a.d===a.n*v.d}
+const showAns=a=>typeof ds==="function"?ds(a):fs(a);
 
 // ---------- parent report ----------
 function summary(){return{name:S.name,xp:S.xp,streak:S.streak,mastered:masteredCount(),seen:SKILLS.filter(s=>learned(s.k)).length,total:SKILLS.length,due:dueList().length,last:S.last}}
+// ---------- compact backup + restore from sheet ----------
+const DAYMS=86400000;
+const _T=(en,zh)=>(typeof L==="function"?L(en,zh):en);
+function packState(s){const o=Object.assign({},s);delete o.w;delete o.intro;delete o.pending;
+  const cut=Date.now()-30*DAYMS,h={};Object.keys(s.hist||{}).forEach(k=>{if(new Date(k+"T00:00:00").getTime()>=cut)h[k]=s.hist[k]});o.hist=h;
+  const keys=Object.keys(s.w||{});o.W=keys.map(k=>{const x=s.w[k];return[k,x.b||0,Math.floor((x.d||0)/DAYMS),x.l||0,x.c||0]});
+  o.ik=keys.length&&keys.every(k=>/^\d+$/.test(k))?"n":"s";o.app=APPID;
+  const enc=x=>"z1."+btoa(unescape(encodeURIComponent(JSON.stringify(x))));let str=enc(o);if(str.length>48000){o.hist={};str=enc(o)}return str}
+function unpackState(str){str=String(str||"").trim();
+  if(str.startsWith("z1.")){const o=JSON.parse(decodeURIComponent(escape(atob(str.slice(3)))));if(o.app&&o.app!==APPID)throw new Error("app");
+    const w={};(o.W||[]).forEach(r=>{w[r[0]]={b:r[1],d:r[2]*DAYMS,l:r[3],c:r[4],t:[]}});
+    o.intro=Object.keys(w).filter(k=>w[k].b>0).map(k=>o.ik==="n"?Number(k):k);delete o.W;delete o.ik;o.w=w;return o}
+  const o=JSON.parse(decodeURIComponent(escape(atob(str))));if(!o.w)throw new Error("format");return o}
+async function restoreFromSheet(){const url=(($("#ru")||{}).value||S.reportUrl||"").trim(),tk=(($("#tk")||{}).value||"").trim(),nm=(($("#nm")||{}).value||S.name||"").trim();
+  if(!url){alert(_T("Paste the sheet URL first.","請先貼上試算表網址。"));return}
+  if(!nm){alert(_T("Enter the name used in the reports first.","請先輸入報告裡使用的名字。"));return}
+  let j;try{const r=await fetch(url+(url.includes("?")?"&":"?")+"name="+encodeURIComponent(nm)+"&app="+APPID+(tk?"&token="+encodeURIComponent(tk):""));j=await r.json()}
+  catch(e){alert(_T("Couldn't read the sheet. Check the URL, and make sure the Apps Script was updated and redeployed as a new version.","無法讀取試算表。請確認網址正確，並確認 Apps Script 已更新並重新部署為新版本。"));return}
+  if(j.error==="denied"){alert(_T("The sheet password doesn't match.","試算表密碼不正確。"));return}
+  if(!j.found){alert(_T("No backup for "+nm+" in this app yet. Finish one session with the report turned on first.","這個 App 還沒有 "+nm+" 的備份。請先在開啟報告的狀態下完成一次練習。"));return}
+  let o;try{o=unpackState(j.backup)}catch(e){alert(_T("That backup belongs to a different app or is damaged.","這份備份屬於其他 App，或已損壞。"));return}
+  if(!confirm(_T(`Found a backup from ${j.received}: ${o.xp} XP, ${o.streak}-day streak. Replace the progress on this device?`,`找到 ${j.received} 的備份：${o.xp} XP、連續 ${o.streak} 天。要用它取代這台裝置上的進度嗎？`)))return;
+  S=Object.assign(fresh(),o);S.reportUrl=url;S.token=tk;S.name=S.name||nm;save();toast(_T("Restored","已還原"));tab="today";render()}
+
 function report(){if(!S.reportUrl)return;const t=todayKey(),h=S.hist[t]||{q:0,ok:0,nw:0,xp:0};
-  const weak=Object.keys(S.w).filter(k=>IDX[k]!==undefined&&S.w[k].l>0&&S.w[k].b<=2).sort((a,b)=>S.w[b].l-S.w[a].l).slice(0,10).map(k=>SKILLS[IDX[k]].name+"("+S.w[k].l+")").join(", ");
-  const body=JSON.stringify(Object.assign(summary(),{date:t,todayQ:h.q,todayAcc:h.q?Math.round(h.ok/h.q*100):"",todayNew:h.nw,todayXP:h.xp,weak,backup:btoa(unescape(encodeURIComponent(JSON.stringify(S))))}));
+  const weak=Object.keys(S.w).filter(k=>IDX[k]!==undefined&&S.w[k].l>0&&S.w[k].b<=2).sort((a,b)=>S.w[b].l-S.w[a].l).slice(0,10).map(k=>SKILLS[IDX[k]].name[1]+"("+S.w[k].l+")").join(", ");
+  const body=JSON.stringify(Object.assign(summary(),{app:APPID,token:S.token||"",date:t,todayQ:h.q,todayAcc:h.q?Math.round(h.ok/h.q*100):"",todayNew:h.nw,todayXP:h.xp,weak,backup:packState(S)}));
   S.pending=true;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
   fetch(S.reportUrl,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body}).then(()=>{S.pending=false;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}).catch(()=>{})}
 
@@ -399,36 +434,43 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 function toast(m){const d=document.createElement("div");d.className="xp-pop";d.style.fontSize="22px";d.style.top="28%";d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),1100)}
 function addXP(n){S.xp+=n;logHist("xp",n);const p=document.createElement("div");p.className="xp-pop";p.textContent="+"+n+" XP";document.body.appendChild(p);setTimeout(()=>p.remove(),900);updateBoard()}
-function updateBoard(){$("#sbStreak").textContent=S.streak;$("#sbXP").textContent=S.xp;$("#sbDue").textContent=dueList().length;$("#sbM").textContent=masteredCount()+"/"+SKILLS.length}
+const NAV={today:["Today","今天"],skills:["Skills","技能"],plan:["Plan","計畫"],stats:["Stats","統計"],settings:["Setup","設定"]};
+function updateBoard(){$("#sbStreak").textContent=S.streak;$("#sbXP").textContent=S.xp;$("#sbDue").textContent=dueList().length;$("#sbM").textContent=masteredCount()+"/"+SKILLS.length;
+  const lb=document.querySelectorAll(".board .l");[["day streak","連續天數"],["XP","經驗值"],["due today","今日待複習"],["mastered","已熟練"]].forEach((x,i)=>{if(lb[i])lb[i].textContent=L(x[0],x[1])});
+  document.querySelectorAll("nav.tabs button").forEach(b=>{const s=b.querySelector(".tx");if(s)s.textContent=L(...NAV[b.dataset.t])});document.documentElement.lang=S.lang==="zh"?"zh-Hant":"en"}
 function render(){inQuiz=false;kpHandler=null;updateBoard();document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===tab));({today:rToday,skills:rSkills,plan:rPlan,stats:rStats,settings:rSettings})[tab]();window.scrollTo(0,0)}
-document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>{if(inQuiz&&!confirm("Leave this session? Answers so far are saved."))return;tab=b.dataset.t;render()});
-const unitTag=u=>`<span class="pill">${esc(u[2])} · ${esc(u[3])}</span>`;
+document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>{if(inQuiz&&!confirm(L("Leave this session? Answers so far are saved.","要離開這次練習嗎？已作答的部分都已儲存。")))return;tab=b.dataset.t;render()});
+const unitTag=u=>`<span class="pill">${esc(L(u[2],u[2]))} · ${esc(u[3])}</span>`;
+const langBtn=()=>`<button class="chip lg" id="lgBtn" aria-label="Language">${S.lang==="zh"?"EN":"中文"}</button>`;
+function bindLang(){const b=$("#lgBtn");if(b)b.onclick=()=>{S.lang=S.lang==="zh"?"en":"zh";save();render()}}
 
 // keypad
 let kpHandler=null,kpVal="";
-function keypadHTML(){const k=["1","2","3","/","4","5","6",".","7","8","9","−"];return `<div class="ans" id="ans">&nbsp;</div><div class="kp">${k.map(x=>`<button class="key${x==="/"||x==="."||x==="−"?" op":""}" data-k="${x}">${x}</button>`).join("")}<button class="key w2" data-k="0">0</button><button class="key w2 op" data-k="⌫">⌫</button></div><button class="btn go" id="goBtn">Check ✓</button><p class="kb" style="text-align:center">Fractions like −3/4 are fine. Decimals work too.</p>`}
+function keypadHTML(){const k=["1","2","3","/","4","5","6",".","7","8","9","−"];return `<div class="ans" id="ans">&nbsp;</div><div class="kp">${k.map(x=>`<button class="key${x==="/"||x==="."||x==="−"?" op":""}" data-k="${x}">${x}</button>`).join("")}<button class="key w2" data-k="0">0</button><button class="key w2 op" data-k="⌫">⌫</button></div><button class="btn go" id="goBtn">${L("Check ✓","確認 ✓")}</button><p class="kb" style="text-align:center">${L(CFG.kpHint[0],CFG.kpHint[1])}</p>`}
 function bindKeypad(onSubmit){kpVal="";kpHandler=onSubmit;const show=()=>{$("#ans").innerHTML=kpVal?esc(kpVal):"&nbsp;"};
   document.querySelectorAll(".key").forEach(b=>b.onclick=()=>press(b.dataset.k));$("#goBtn").onclick=()=>press("ok");show()}
-function press(k){if(!kpHandler)return;if(k==="ok"){const v=parseAns(kpVal);if(v)kpHandler(v);else if(kpVal)toast("Check the format");return}
+function press(k){if(!kpHandler)return;if(k==="ok"){const v=parseAns(kpVal);if(v)kpHandler(v);else if(kpVal)toast(L("Check the format","請檢查格式"));return}
   if(k==="⌫")kpVal=kpVal.slice(0,-1);else if(k==="−"){kpVal=kpVal.startsWith("−")?kpVal.slice(1):"−"+kpVal}else if(kpVal.length<10)kpVal+=k;$("#ans").innerHTML=kpVal?esc(kpVal):"&nbsp;"}
 document.addEventListener("keydown",e=>{if(!kpHandler)return;if(/^[0-9]$/.test(e.key))press(e.key);else if(e.key==="-")press("−");else if(e.key==="/"||e.key===".")press(e.key);else if(e.key==="Backspace")press("⌫");else if(e.key==="Enter"){e.preventDefault();press("ok")}});
 
 function learnCard(k){const s=SKILLS[IDX[k]],u=unitOf(k),ex=s.gen();
-  return `<p class="muted">New skill ${unitTag(u)}</p><h2>${esc(s.name)}</h2><div class="hint" style="margin-top:12px">💡 ${esc(s.idea)}</div>
-  <div class="ex"><p class="muted" style="margin:0 0 4px">Worked example</p><p class="qtext">${esc(ex.text)}</p><p><b>Answer: ${esc(fs(ex.ans))}</b></p><p class="muted">${esc(ex.sol)}</p></div>`}
+  return `<p class="muted">${L("New skill","新技能")} ${unitTag(u)}</p><h2>${esc(nm(s))}</h2><div class="hint" style="margin-top:12px">💡 ${esc(idea(s))}</div>
+  <div class="ex"><p class="muted" style="margin:0 0 4px">${L("Worked example","範例")}</p><p class="qtext">${esc(ex.text)}</p><p><b>${L("Answer","答案")}: ${esc(showAns(ex.ans))}</b></p><p class="muted">${esc(ex.sol)}</p></div>`}
 
 // ---------- today ----------
 function nextCheckUnit(){return UNITS.find(u=>SKILLS.some(s=>s.u===u[0]&&!S.check[s.k]&&ws(s.k).b===0))}
 function rToday(){const due=dueList(),h=S.hist[todayKey()]||{nw:0},un=unseen();const nNew=Math.min(Math.max(0,S.perDay-(h.nw||0)),un.length);
-  const {L,next}=level();const p=next?Math.round((S.xp-L[0])/(next[0]-L[0])*100):100;const done=due.length===0&&nNew===0;const nc=nextCheckUnit();
-  main.innerHTML=`<div class="lvl"><div class="ring" style="--p:${p}%"><i>${L[2]}</i></div><div><h2>${esc(S.name||"Student")} · ${L[1]}</h2><div class="muted">${next?`${next[0]-S.xp} XP to ${next[1]}`:"Max level"}</div></div></div>
-  ${nc?`<div class="note" style="border-style:solid;border-color:var(--gold)"><b>Unit check: ${esc(nc[1])}</b> <span class="muted">(${esc(nc[2])})</span><br>One question per skill. Skills you get right are marked as known, so practice goes only to the gaps.<button class="btn gold" style="margin-top:10px" id="chkBtn">Start unit check</button></div>`:""}
-  <div class="rink"><h1>${done?"Done for today ✔":"Today’s session"}</h1>
-  <p class="muted">${done?"Reviews are done and new skills are in. Come back tomorrow, or try a bonus round.":`<b>${Math.min(due.length,15)}</b> reviews due · <b>${nNew}</b> new skill${nNew===1?"":"s"} · about ${Math.max(5,Math.ceil(Math.min(due.length,15)*1+nNew*4))} min`}</p>
-  <div class="row" style="margin-top:12px"><button class="btn" id="startBtn" ${done?"disabled":""}>${due.length?"Start reviews + new skills":"Start new skills"}</button>
-  <button class="btn gold" id="bonusBtn" ${SKILLS.filter(s=>learned(s.k)).length<3?"disabled":""}>Bonus round: 5 mixed questions</button>
-  ${done&&un.length?`<button class="btn ghost" id="extraBtn">Learn 1 extra skill</button>`:""}</div></div>
-  <div class="blueline"><h3>How this works</h3><p class="muted" style="font-size:15px">Each skill comes back after 1 → 3 → 7 → 14 → 30 days, with a new problem every time. Right answer: it moves up. Wrong: you see the full solution, try a similar problem, and it comes back tomorrow. No XP is ever taken away.</p></div>`;
+  const {Lv,next}=level();const p=next?Math.round((S.xp-Lv[0])/(next[0]-Lv[0])*100):100;const done=due.length===0&&nNew===0;const nc=nextCheckUnit();const nd=Math.min(due.length,15);
+  main.innerHTML=`<div class="row" style="justify-content:space-between;align-items:center;flex-wrap:nowrap"><div class="lvl"><div class="ring" style="--p:${p}%"><i>${Lv[3]}</i></div><div><h2>${esc(S.name||L("Student","同學"))} · ${lvName(Lv)}</h2><div class="muted">${next?L(`${next[0]-S.xp} XP to ${next[1]}`,`再 ${next[0]-S.xp} XP 升到「${next[2]}」`):L("Max level","最高等級")}</div></div></div>${langBtn()}</div>
+  ${nc?`<div class="note" style="border-style:solid;border-color:var(--gold)"><b>${L("Unit check","單元檢測")}: ${esc(unitName(nc))}</b><br>${L("One question per skill. Skills you get right are marked as known, so practice goes only to the gaps.","每個技能一題。答對的標記為已會，之後只練不會的部分。")}<button class="btn gold" style="margin-top:10px" id="chkBtn">${L("Start unit check","開始單元檢測")}</button></div>`:""}
+  <div class="rink"><h1>${done?L(...CFG.doneTitle):L(...CFG.todayTitle)}</h1>
+  <p class="muted">${done?L("Reviews are done and new skills are in. Come back tomorrow, or try a bonus round.","今天的複習和新技能都完成了。明天再來，或玩一下加分題。"):L(`<b>${nd}</b> reviews due · <b>${nNew}</b> new skill${nNew===1?"":"s"} · about ${Math.max(5,nd+nNew*4)} min`,`待複習 <b>${nd}</b> 題 · 新技能 <b>${nNew}</b> 個 · 約 ${Math.max(5,nd+nNew*4)} 分鐘`)}</p>
+  ${CFG.themes?`<p class="muted" style="margin-top:12px;font-size:15px">${L("Word problems today come from:","今天應用題的情境：")}</p><div class="chips">${CFG.themes.map(t=>`<button class="chip th ${S.theme===t[0]?"on":""}" data-th="${t[0]}">${L(t[1],t[2])}</button>`).join("")}</div>`:""}
+  <div class="row" style="margin-top:10px"><button class="btn" id="startBtn" ${done?"disabled":""}>${due.length?L("Start reviews + new skills","開始複習＋新技能"):L("Start new skills","開始學新技能")}</button>
+  <button class="btn gold" id="bonusBtn" ${SKILLS.filter(s=>learned(s.k)).length<3?"disabled":""}>${L("Bonus round: 5 mixed questions","加分題：混合 5 題")}</button>
+  ${done&&un.length?`<button class="btn ghost" id="extraBtn">${L("Learn 1 extra skill","多學 1 個技能")}</button>`:""}</div></div>
+  <div class="blueline"><h3>${L("How this works","怎麼運作")}</h3><p class="muted" style="font-size:15px">${L("Each skill comes back after 1 → 3 → 7 → 14 → 30 days, with a new problem every time. Right answer: it moves up. Wrong: you see the full solution, try a similar problem, and it comes back tomorrow. No XP is ever taken away.","每個技能會在 1 → 3 → 7 → 14 → 30 天後再出現，每次都是新題目。答對就往上升一級；答錯會看到完整解法、馬上再做一題類似的，明天再複習。經驗值永遠不會被扣。")}</p></div>`;
+  bindLang();document.querySelectorAll(".chip.th").forEach(c=>c.onclick=()=>{S.theme=c.dataset.th;save();rToday()});
   $("#startBtn").onclick=()=>session(shuffle(due).slice(0,15),un.slice(0,nNew));
   $("#bonusBtn").onclick=()=>session(shuffle(SKILLS.filter(s=>learned(s.k)).map(s=>s.k)).slice(0,5),[],true);
   const x=$("#extraBtn");if(x)x.onclick=()=>session([],un.slice(0,1));const c=$("#chkBtn");if(c)c.onclick=()=>unitCheck(nc[0])}
@@ -441,85 +483,145 @@ function session(dueKeys,newKeys,bonus){inQuiz=true;const queue=[];
   let i=0,q=0,ok=0,combo=0,wrongs=[];
   const step=()=>{if(i>=queue.length)return finish();const it=queue[i];const pct=Math.round(i/queue.length*100);const s=SKILLS[IDX[it.k]];
     if(it.kind==="learn"){if(ws(it.k).b===0){S.w[it.k]={b:1,d:Date.now()+DAY,l:0,c:0};logHist("nw",1);save()}
-      main.innerHTML=`<div class="prog"><i style="width:${pct}%"></i></div><div class="wcard">${learnCard(it.k)}</div><button class="btn" style="margin-top:12px" id="nx">Got it — let me try</button>`;$("#nx").onclick=()=>{i++;addXP(5);step()};return}
-    const Q=s.gen();
-    main.innerHTML=`<div class="prog"><i style="width:${pct}%"></i></div><p class="muted">${bonus?"Bonus":it.isNew?"New skill":it.retry?"Similar problem":"Review"} · ${i+1}/${queue.length} · ${esc(s.name)} ${combo>=3?`· 🔥 ${combo}`:""}</p>
+      main.innerHTML=`<div class="prog"><i style="width:${pct}%"></i></div><div class="wcard">${learnCard(it.k)}</div><button class="btn" style="margin-top:12px" id="nx">${L("Got it — let me try","了解，我來試試")}</button>`;$("#nx").onclick=()=>{i++;addXP(5);step()};return}
+    const Q=s.gen();const lab=bonus?L("Bonus","加分題"):it.isNew?L("New skill","新技能"):it.retry?L("Similar problem","類似題"):L("Review","複習");
+    main.innerHTML=`<div class="prog"><i style="width:${pct}%"></i></div><p class="muted">${lab} · ${i+1}/${queue.length} · ${esc(nm(s))} ${combo>=3?`· 🔥 ${combo}`:""}</p>
       <div class="wcard q"><p class="qtext">${esc(Q.text)}</p></div>${keypadHTML()}<div id="fb"></div>`;
     bindKeypad(v=>{kpHandler=null;const right=sameAns(v,Q.ans);q++;logHist("q",1);
       if(!it.retry&&!bonus&&!(it.second&&right))grade(it.k,right);
       if(right){ok++;combo++;logHist("ok",1);addXP(bonus?6:10+(combo>=4?5:0));$("#ans").classList.add("ok");
-        $("#fb").innerHTML=`<div class="fb"><b>Right.</b> <span class="muted">${esc(Q.sol)}</span></div><button class="btn" style="margin-top:10px" id="nx">Next</button>`;$("#nx").onclick=()=>{i++;step()}}
+        $("#fb").innerHTML=`<div class="fb"><b>${L("Right.","答對了！")}</b> <span class="muted">${esc(Q.sol)}</span></div><button class="btn" style="margin-top:10px" id="nx">${L("Next","下一題")}</button>`;$("#nx").onclick=()=>{i++;step()}}
       else{combo=0;wrongs.push(it.k);addXP(2);$("#ans").classList.add("bad");
-        $("#fb").innerHTML=`<div class="fb bad"><b>Answer: ${esc(fs(Q.ans))}</b><br>${esc(Q.sol)}<div class="hint" style="margin-top:8px">💡 ${esc(s.idea)}</div></div><button class="btn" style="margin-top:10px" id="nx">Try a similar one</button>`;
+        $("#fb").innerHTML=`<div class="fb bad"><b>${L("Answer","答案")}: ${esc(showAns(Q.ans))}</b><br>${esc(Q.sol)}<div class="hint" style="margin-top:8px">💡 ${esc(idea(s))}</div></div><button class="btn" style="margin-top:10px" id="nx">${L("Try a similar one","再做一題類似的")}</button>`;
         $("#nx").onclick=()=>{queue.splice(i+1,0,{kind:"q",k:it.k,retry:true});i++;step()}}
       save()})};
   const finish=()=>{inQuiz=false;touchStreak();addBadge("first");if(q>=8&&ok===q)addBadge("perfect");checkBadges();save();report();
     const acc=q?Math.round(ok/q*100):100;
-    main.innerHTML=`<div class="rink"><h1>Session complete</h1><div class="stat"><span>Questions</span><span class="v">${q}</span></div><div class="stat"><span>Accuracy</span><span class="v">${acc}%</span></div><div class="stat"><span>Streak</span><span class="v">🔥 ${S.streak}</span></div>
-    ${wrongs.length?`<div class="blueline"><h3>Coming back tomorrow</h3>${[...new Set(wrongs)].map(k=>`<div class="wl"><b>${esc(SKILLS[IDX[k]].name)}</b><span class="muted">${esc(unitOf(k)[2])}</span></div>`).join("")}</div>`:`<p style="margin-top:14px">Perfect. ⭐</p>`}
-    <button class="btn" style="margin-top:16px" id="home">Back to Today</button></div>`;$("#home").onclick=()=>{tab="today";render()}};
+    main.innerHTML=`<div class="rink"><h1>${L(...CFG.finishTitle)}</h1><div class="stat"><span>${L("Questions","題數")}</span><span class="v">${q}</span></div><div class="stat"><span>${L("Accuracy","正確率")}</span><span class="v">${acc}%</span></div><div class="stat"><span>${L("Streak","連續天數")}</span><span class="v">🔥 ${S.streak}</span></div>
+    ${wrongs.length?`<div class="blueline"><h3>${L("Coming back tomorrow","明天再複習")}</h3>${[...new Set(wrongs)].map(k=>`<div class="wl"><b>${esc(nm(SKILLS[IDX[k]]))}</b><span class="muted">${esc(unitOf(k)[2])}</span></div>`).join("")}</div>`:`<p style="margin-top:14px">${L(...CFG.perfectLine)}</p>`}
+    <button class="btn" style="margin-top:16px" id="home">${L("Back to Today","回到今天")}</button></div>`;$("#home").onclick=()=>{tab="today";render()}};
   step()}
 
 // ---------- unit check ----------
 function unitCheck(u){inQuiz=true;const unit=UNITS.find(x=>x[0]===u);const keys=SKILLS.filter(s=>s.u===u).map(s=>s.k);let i=0;const res=[];
   const end=()=>{inQuiz=false;addBadge("checked");save();const good=res.filter(r=>r.ok).length;
-    main.innerHTML=`<div class="rink"><h1>Check done: ${esc(unit[1])}</h1><p class="muted">${esc(unit[2])} · ${esc(unit[3])}</p><p style="font-size:19px">${good} of ${res.length} right.</p>
-    ${res.map(r=>`<div class="wl"><b>${esc(SKILLS[IDX[r.k]].name)}</b><span class="pill ${r.ok?"b4":"due"}">${r.ok?"known":r.skip?"skipped":"to learn"}</span></div>`).join("")}
-    <p class="muted" style="margin-top:10px">Known skills still come back for review in a week. The rest are added to your daily sessions.</p><button class="btn" style="margin-top:12px" id="home">Back to Today</button></div>`;$("#home").onclick=()=>{tab="today";render()}};
+    main.innerHTML=`<div class="rink"><h1>${L("Check done","檢測完成")}: ${esc(unitName(unit))}</h1><p class="muted">${esc(unit[2])} · ${esc(unit[3])}</p><p style="font-size:19px">${L(`${good} of ${res.length} right.`,`${res.length} 題答對 ${good} 題。`)}</p>
+    ${res.map(r=>`<div class="wl"><b>${esc(nm(SKILLS[IDX[r.k]]))}</b><span class="pill ${r.ok?"b4":"due"}">${r.ok?L("known","已會"):r.skip?L("skipped","跳過"):L("to learn","要學")}</span></div>`).join("")}
+    <p class="muted" style="margin-top:10px">${L("Known skills still come back for review in a week. The rest are added to your daily sessions.","已會的技能一週後還會再複習一次確認，其餘的會排進每天的練習。")}</p><button class="btn" style="margin-top:12px" id="home">${L("Back to Today","回到今天")}</button></div>`;$("#home").onclick=()=>{tab="today";render()}};
   const step=()=>{if(i>=keys.length)return end();const k=keys[i],s=SKILLS[IDX[k]],Q=s.gen();
-    main.innerHTML=`<div class="prog"><i style="width:${Math.round(i/keys.length*100)}%"></i></div><p class="muted">Unit check · ${esc(unit[1])} · ${i+1}/${keys.length}</p><div class="wcard q"><p class="qtext">${esc(Q.text)}</p></div>${keypadHTML()}<div class="row" style="margin-top:6px"><button class="btn ghost sm" id="skip">I haven't learned this</button><button class="btn ghost sm" id="stop">Stop for now</button></div>`;
+    main.innerHTML=`<div class="prog"><i style="width:${Math.round(i/keys.length*100)}%"></i></div><p class="muted">${L("Unit check","單元檢測")} · ${esc(unitName(unit))} · ${i+1}/${keys.length}</p><div class="wcard q"><p class="qtext">${esc(Q.text)}</p></div>${keypadHTML()}<div class="row" style="margin-top:6px"><button class="btn ghost sm" id="skip">${L("I haven't learned this","還沒學過")}</button><button class="btn ghost sm" id="stop">${L("Stop for now","先停在這裡")}</button></div>`;
     const mark=(ok,skip)=>{S.check[k]={ok,d:todayKey()};if(ok&&ws(k).b===0)S.w[k]={b:3,d:Date.now()+7*DAY,l:0,c:1};res.push({k,ok,skip});save();i++;step()};
     bindKeypad(v=>{kpHandler=null;mark(sameAns(v,Q.ans),false)});$("#skip").onclick=()=>{kpHandler=null;mark(false,true)};$("#stop").onclick=()=>{kpHandler=null;end()}};
   step()}
 
 // ---------- skills tab ----------
 function rSkills(){const now=Date.now();
-  main.innerHTML=`<h1>Skills</h1><p class="muted">Mapped to Taiwan's 108 curriculum. Tap a unit for details or to run its check.</p>${UNITS.map(u=>{const its=SKILLS.filter(s=>s.u===u[0]);const m=its.filter(s=>mastered(s.k)).length,l=its.filter(s=>learned(s.k)).length;
-    return `<button class="unit" data-u="${u[0]}"><div class="row" style="justify-content:space-between;width:100%;align-items:baseline"><span><b>${esc(u[1])}</b> <span class="muted">${esc(u[2])}</span></span><span class="muted">${esc(u[3])} · ${m}/${its.length}</span></div><div class="bar"><i style="width:${m/its.length*100}%"></i><i class="s" style="width:${(l-m)/its.length*100}%"></i></div></button>`}).join("")}<p class="kb">Dark = mastered · light = learning</p>`;
+  main.innerHTML=`<div class="row" style="justify-content:space-between;align-items:center"><h1>${L("Skills","技能")}</h1>${langBtn()}</div><p class="muted">${L(CFG.skillsIntro[0],CFG.skillsIntro[1])}</p>${UNITS.map(u=>{const its=SKILLS.filter(s=>s.u===u[0]);const m=its.filter(s=>mastered(s.k)).length,l=its.filter(s=>learned(s.k)).length;
+    return `<button class="unit" data-u="${u[0]}"><div class="row" style="justify-content:space-between;width:100%;align-items:baseline"><span><b>${esc(unitName(u))}</b>${S.lang==="zh"?"":` <span class="muted">${esc(u[2])}</span>`}</span><span class="muted">${esc(u[3])} · ${m}/${its.length}</span></div><div class="bar"><i style="width:${m/its.length*100}%"></i><i class="s" style="width:${(l-m)/its.length*100}%"></i></div></button>`}).join("")}<p class="kb">${L("Dark = mastered · light = learning","深色 = 已熟練 · 淺色 = 學習中")}</p>`;
+  bindLang();
   document.querySelectorAll(".unit").forEach(b=>b.onclick=()=>{const u=UNITS.find(x=>x[0]===b.dataset.u);const its=SKILLS.filter(s=>s.u===u[0]);$("#modal").classList.remove("hidden");
-    $("#modal").innerHTML=`<div style="max-height:82vh;overflow:auto"><h2>${esc(u[1])}</h2><p class="muted">${esc(u[2])} · ${esc(u[3])}</p>${its.map(s=>{const x=ws(s.k),c=S.check[s.k];return `<div class="wl"><span><b>${esc(s.name)}</b>${c?` <span class="muted" style="font-size:13px">check: ${c.ok?"✓":"✗"}</span>`:""}</span><span class="pill ${x.b>=4?"b4":x.b>0&&x.d<=now?"due":""}">${x.b===0?"new":x.b>=4?"mastered":x.d<=now?"due":"box "+x.b}${x.l?` · ${x.l} miss`:""}</span></div>`}).join("")}
-    <div class="row" style="margin-top:12px"><button class="btn gold sm" id="uc">Run unit check</button><button class="btn ghost sm" id="cl">Close</button></div></div>`;
+    $("#modal").innerHTML=`<div style="max-height:82vh;overflow:auto"><h2>${esc(unitName(u))}</h2><p class="muted">${esc(u[2])} · ${esc(u[3])}</p>${its.map(s=>{const x=ws(s.k),c=S.check[s.k];return `<div class="wl"><span><b>${esc(nm(s))}</b>${c?` <span class="muted" style="font-size:13px">${L("check","檢測")}: ${c.ok?"✓":"✗"}</span>`:""}</span><span class="pill ${x.b>=4?"b4":x.b>0&&x.d<=now?"due":""}">${x.b===0?L("new","未學"):x.b>=4?L("mastered","已熟練"):x.d<=now?L("due","待複習"):L("box ","第 ")+x.b+L(""," 級")}${x.l?` · ${x.l} ${L("miss","次錯")}`:""}</span></div>`}).join("")}
+    <div class="row" style="margin-top:12px"><button class="btn gold sm" id="uc">${L("Run unit check","進行單元檢測")}</button><button class="btn ghost sm" id="cl">${L("Close","關閉")}</button></div></div>`;
     $("#cl").onclick=()=>$("#modal").classList.add("hidden");$("#uc").onclick=()=>{$("#modal").classList.add("hidden");unitCheck(u[0])}})}
 
 // ---------- plan ----------
-function rPlan(){const pc=pace();const s1=semSkills("上"),s2=semSkills("下");const l1=s1.filter(s=>learned(s.k)).length,l2=s2.filter(s=>learned(s.k)).length;
-  main.innerHTML=`<h1>Plan</h1><p class="muted">Target: Taiwan Grade 10 (高一, 108 curriculum). Goal date ${S.goal} · ${pc.d} days · ${pc.left} skills not yet learned.</p>
-  <div class="phase now"><div class="w">Now</div><div><b>Unit checks first.</b> Run the check for each unit (Today shows the next one). This shows exactly which 高一 skills are already solid and which are gaps.</div></div>
-  <div class="phase"><div class="w">高一上</div><div><b>${l1}/${s1.length} learned.</b> Middle-school foundations, Numbers & expressions (數與式), Lines & circles (直線與圓), Polynomial functions (多項式函數). In Taiwan these are taught from September to January, so they matter most right now.</div></div>
-  <div class="phase"><div class="w">高一下</div><div><b>${l2}/${s2.length} learned.</b> Sequences & series (數列與級數), Data analysis (數據分析), Counting (排列組合), Probability (機率). Taught February to June.</div></div>
-  <div class="phase"><div class="w">Daily</div><div>One session, 6 days a week, about 10–15 minutes: due reviews first, then ${S.perDay} new skill${S.perDay===1?"":"s"}. ${pc.rec>S.perDay?`To finish all skills two weeks before the goal date, about ${pc.rec} new per day is needed.`:""}</div></div>
-  <div class="blueline"><h3>What this app does and doesn't cover</h3><p class="muted" style="font-size:15px">It drills the core calculations of each 高一 topic with fresh problems every time. Taiwanese exams also ask multi-step and proof-style questions; once a unit here is mastered, a 高一 textbook or past-exam set (學測 style) is the right next step for that unit.</p></div>`}
+function rPlan(){const pc=pace();const s1=semSkills(1),s2=semSkills(2);const l1=s1.filter(s=>learned(s.k)).length,l2=s2.filter(s=>learned(s.k)).length;
+  main.innerHTML=`<div class="row" style="justify-content:space-between;align-items:center"><h1>${L("Plan","計畫")}</h1>${langBtn()}</div>`+CFG.plan({pc,s1,s2,l1,l2});bindLang()}
 
 // ---------- stats ----------
 function rStats(){const days=[];for(let k=6;k>=0;k--){const key=todayKey(new Date(Date.now()-k*DAY));days.push({key,h:S.hist[key]})}
   const tricky=SKILLS.filter(s=>ws(s.k).l>0).sort((a,b)=>ws(b.k).l-ws(a.k).l).slice(0,8);
   const gaps=SKILLS.filter(s=>S.check[s.k]&&!S.check[s.k].ok);
-  main.innerHTML=`<h1>Stats</h1><div class="stat"><span>Skills mastered</span><span class="v">${masteredCount()} / ${SKILLS.length}</span></div><div class="stat"><span>Skills learned</span><span class="v">${SKILLS.filter(s=>learned(s.k)).length}</span></div><div class="stat"><span>Best streak</span><span class="v">${S.best}</span></div><div class="stat"><span>Total XP</span><span class="v">${S.xp}</span></div>
-  ${gaps.length?`<div class="blueline"><h3>Gaps found in unit checks</h3>${gaps.map(s=>`<div class="wl"><b>${esc(s.name)}</b><span class="muted">${esc(UNITS.find(u=>u[0]===s.u)[2])} · ${mastered(s.k)?"now mastered ✓":learned(s.k)?"learning":"not started"}</span></div>`).join("")}</div>`:""}
-  <div class="blueline"><h3>Last 7 days</h3>${days.map(x=>`<div class="stat"><span>${x.key.slice(5)}</span><span>${x.h?`${x.h.q||0} questions · ${x.h.q?Math.round((x.h.ok||0)/x.h.q*100):0}% · +${x.h.xp||0} XP`:"<span class='muted'>—</span>"}</span></div>`).join("")}</div>
-  ${tricky.length?`<div class="blueline"><h3>Trickiest so far</h3>${tricky.map(s=>`<div class="wl"><b>${esc(s.name)}</b><span class="muted">${ws(s.k).l} misses</span></div>`).join("")}</div>`:""}
-  <div class="blueline"><h3>Badges</h3><div class="badges">${BADGES.map(b=>`<div class="badge ${S.badges.includes(b[0])?"got":""}"><div class="e">${b[2]}</div><b>${b[1]}</b><div class="muted">${b[3]}</div></div>`).join("")}</div></div>`}
+  main.innerHTML=`<div class="row" style="justify-content:space-between;align-items:center"><h1>${L("Stats","統計")}</h1>${langBtn()}</div><div class="stat"><span>${L("Skills mastered","已熟練技能")}</span><span class="v">${masteredCount()} / ${SKILLS.length}</span></div><div class="stat"><span>${L("Skills learned","已學技能")}</span><span class="v">${SKILLS.filter(s=>learned(s.k)).length}</span></div><div class="stat"><span>${L("Best streak","最長連續天數")}</span><span class="v">${S.best}</span></div><div class="stat"><span>${L("Total XP","總經驗值")}</span><span class="v">${S.xp}</span></div>
+  ${gaps.length?`<div class="blueline"><h3>${L("Gaps found in unit checks","單元檢測找到的缺口")}</h3>${gaps.map(s=>`<div class="wl"><b>${esc(nm(s))}</b><span class="muted">${esc(UNITS.find(u=>u[0]===s.u)[2])} · ${mastered(s.k)?L("now mastered ✓","已補上 ✓"):learned(s.k)?L("learning","學習中"):L("not started","尚未開始")}</span></div>`).join("")}</div>`:""}
+  <div class="blueline"><h3>${L("Last 7 days","最近 7 天")}</h3>${days.map(x=>`<div class="stat"><span>${x.key.slice(5)}</span><span>${x.h?L(`${x.h.q||0} questions · ${x.h.q?Math.round((x.h.ok||0)/x.h.q*100):0}% · +${x.h.xp||0} XP`,`${x.h.q||0} 題 · ${x.h.q?Math.round((x.h.ok||0)/x.h.q*100):0}% · +${x.h.xp||0} XP`):"<span class='muted'>—</span>"}</span></div>`).join("")}</div>
+  ${tricky.length?`<div class="blueline"><h3>${L("Trickiest so far","目前最常錯")}</h3>${tricky.map(s=>`<div class="wl"><b>${esc(nm(s))}</b><span class="muted">${ws(s.k).l} ${L("misses","次錯")}</span></div>`).join("")}</div>`:""}
+  <div class="blueline"><h3>${L("Badges","徽章")}</h3><div class="badges">${BADGES.map(b=>`<div class="badge ${S.badges.includes(b[0])?"got":""}"><div class="e">${b[3]}</div><b>${bName(b)}</b><div class="muted">${L(b[4],b[5])}</div></div>`).join("")}</div></div>`;bindLang()}
 
 // ---------- settings ----------
 function rSettings(){const pc=pace();
-  main.innerHTML=`<h1>Setup</h1><label class="f">Name</label><input id="nm" value="${esc(S.name)}">
-  <label class="f">Goal date</label><input id="gd" type="date" value="${S.goal}">
-  <label class="f">New skills per day (suggested now: ${pc.rec})</label><input id="pd" type="number" min="1" max="6" value="${S.perDay}">
-  <button class="btn" style="margin-top:16px" id="sv">Save setup</button>
-  <div class="blueline"><h3>Parent report</h3><p class="muted" style="font-size:14px">Paste the Google Apps Script web-app URL. After each session the app sends a one-line summary and a backup to that sheet.</p><input id="ru" placeholder="https://script.google.com/macros/s/.../exec" value="${esc(S.reportUrl||"")}"><div class="row" style="margin-top:8px"><button class="btn ghost sm" id="rt">Send a test report</button></div></div>
-  <div class="blueline"><h3>Backup</h3><div class="row"><button class="btn ghost sm" id="exp">Export progress</button><button class="btn ghost sm" id="imp">Import progress</button></div><textarea id="bk" style="width:100%;height:80px;margin-top:8px;font:13px monospace;border:2px solid var(--line);border-radius:8px;background:var(--ice2);color:var(--ink)" placeholder="Progress code appears here / paste a code here"></textarea></div>
-  <div class="note">Progress is saved on this device. App version ${APP_VERSION}.</div>
-  <div class="rink"><button class="btn ghost" id="rs">Reset all progress</button></div>`;
-  $("#sv").onclick=()=>{S.name=$("#nm").value.trim();S.goal=$("#gd").value||S.goal;S.perDay=Math.max(1,Math.min(6,+$("#pd").value||2));S.reportUrl=$("#ru").value.trim();save();toast("Saved");tab="today";render()};
-  $("#rt").onclick=()=>{S.reportUrl=$("#ru").value.trim();save();if(!S.reportUrl){alert("Paste a URL first.");return}report();toast("Sent — check the sheet")};
-  $("#exp").onclick=()=>{$("#bk").value=btoa(unescape(encodeURIComponent(JSON.stringify(S))));$("#bk").select();try{navigator.clipboard.writeText($("#bk").value);toast("Copied")}catch(e){}};
-  $("#imp").onclick=()=>{try{const o=JSON.parse(decodeURIComponent(escape(atob($("#bk").value.trim()))));if(!o.w)throw 0;if(confirm("Replace current progress with this code?")){S=Object.assign(fresh(),o);save();toast("Imported");tab="today";render()}}catch(e){alert("That code is not valid.")}};
-  $("#rs").onclick=()=>{if(confirm("Reset everything? This cannot be undone.")){const nm=S.name,g=S.goal,ru=S.reportUrl;S=fresh();S.name=nm;S.goal=g;S.reportUrl=ru;save();render()}}}
+  main.innerHTML=`<h1>${L("Setup","設定")}</h1>
+  <label class="f">${L("Language","語言")}</label><div class="chips"><button class="chip lgs ${S.lang!=="zh"?"on":""}" data-l="en">English</button><button class="chip lgs ${S.lang==="zh"?"on":""}" data-l="zh">中文</button></div>
+  <label class="f">${L("Name","名字")}</label><input id="nm" value="${esc(S.name)}">
+  <label class="f">${L("Goal date","目標日期")}</label><input id="gd" type="date" value="${S.goal}">
+  <label class="f">${L(`New skills per day (suggested now: ${pc.rec})`,`每天新技能數（目前建議：${pc.rec}）`)}</label><input id="pd" type="number" min="1" max="6" value="${S.perDay}">
+  <button class="btn" style="margin-top:16px" id="sv">${L("Save setup","儲存設定")}</button>
+  <div class="blueline"><h3>${L("Parent report","家長報告")}</h3><p class="muted" style="font-size:14px">${L("Paste the Google Apps Script web-app URL. After each session the app sends a one-line summary and a backup to that sheet.","貼上 Google Apps Script 網頁應用程式的網址。每次練習完，App 會把一列摘要和備份送到試算表。")}</p>
+  <input id="ru" placeholder="https://script.google.com/macros/s/.../exec" value="${esc(S.reportUrl||"")}">
+  <label class="f" style="font-size:14px">${L("Sheet password (optional)","試算表密碼（選填）")}</label><input id="tk" value="${esc(S.token||"")}" placeholder="${L("Only if you set one in the Apps Script","只有在 Apps Script 有設定時才需要")}">
+  <div class="row" style="margin-top:8px"><button class="btn ghost sm" id="rt">${L("Send a test report","送出測試報告")}</button><button class="btn ghost sm" id="rf">${L("Restore from sheet","從試算表還原")}</button><button class="btn ghost sm" id="sn">${L("Sync now","立即同步")}</button></div><p class="kb" style="margin-top:8px"><b>${L("Sync across devices","跨裝置同步")}:</b> <span id="syncSt"></span></p><div></div></div>
+  <div class="blueline"><h3>${L("Backup","備份")}</h3><div class="row"><button class="btn ghost sm" id="exp">${L("Export progress","匯出進度")}</button><button class="btn ghost sm" id="imp">${L("Import progress","匯入進度")}</button></div><textarea id="bk" style="width:100%;height:80px;margin-top:8px;font:13px monospace;border:2px solid var(--line);border-radius:8px;background:var(--ice2);color:var(--ink)" placeholder="${L("Progress code appears here / paste a code here","進度碼會顯示在這裡／也可以貼上進度碼")}"></textarea></div>
+  <div class="note">${L("Progress is saved on this device.","進度儲存在這台裝置上。")} ${L("App version","版本")} ${APP_VERSION}.</div>
+  <div class="rink"><button class="btn ghost" id="rs">${L("Reset all progress","重設所有進度")}</button></div>`;
+  document.querySelectorAll(".chip.lgs").forEach(c=>c.onclick=()=>{S.lang=c.dataset.l;save();render()});
+  const grab=()=>{S.name=$("#nm").value.trim();S.goal=$("#gd").value||S.goal;S.perDay=Math.max(1,Math.min(6,+$("#pd").value||2));S.reportUrl=$("#ru").value.trim();S.token=$("#tk").value.trim()};
+  $("#sv").onclick=()=>{grab();save();toast(L("Saved","已儲存"));tab="today";render()};
+  $("#rt").onclick=()=>{grab();save();if(!S.reportUrl){alert(L("Paste a URL first.","請先貼上網址。"));return}report();toast(L("Sent — check the sheet","已送出，請查看試算表"))};
+  $("#rf").onclick=restoreFromSheet;$("#sn").onclick=()=>{const u=document.getElementById("ru"),t=document.getElementById("tk"),nmEl=document.getElementById("nm");if(u)S.reportUrl=u.value.trim();if(t)S.token=t.value.trim();if(nmEl&&nmEl.value.trim())S.name=nmEl.value.trim();save();syncNow(true,true)};showSync();
+  $("#exp").onclick=()=>{$("#bk").value=packState(S);$("#bk").select();try{navigator.clipboard.writeText($("#bk").value);toast(L("Copied","已複製"))}catch(e){}};
+  $("#imp").onclick=()=>{try{const o=unpackState($("#bk").value);if(confirm(L("Replace current progress with this code?","要用這組進度碼取代目前的進度嗎？"))){S=Object.assign(fresh(),o);save();toast(L("Imported","已匯入"));tab="today";render()}}catch(e){alert(L("That code is not valid.","這組進度碼無效。"))}};
+  $("#rs").onclick=()=>{if(confirm(L("Reset everything? This cannot be undone.","確定要重設全部進度？這個動作無法復原。"))){const keep={name:S.name,goal:S.goal,reportUrl:S.reportUrl,token:S.token,lang:S.lang};S=Object.assign(fresh(),keep);S.epoch=Date.now();save();render()}}}
 
 // ---------- boot ----------
 load();render();if(S.pending&&navigator.onLine)report();
-if(!S.name){$("#modal").classList.remove("hidden");$("#modal").innerHTML=`<div><h2>Welcome to Math Prep</h2><p class="muted">Short daily practice on every Grade 10 math skill in Taiwan's curriculum. Start with the unit checks so practice goes only where it's needed.</p><label class="f">Your name</label><input id="n0" placeholder="Your name"><label class="f">Goal date</label><input id="g0" type="date" value="${S.goal}"><button class="btn" style="margin-top:14px" id="go">Get started</button></div>`;
-  $("#go").onclick=()=>{S.name=$("#n0").value.trim()||"Student";S.goal=$("#g0").value||S.goal;save();$("#modal").classList.add("hidden");render()}}
+if(!S.name){$("#modal").classList.remove("hidden");
+  const welcome=()=>{$("#modal").innerHTML=`<div><div class="row" style="justify-content:space-between;align-items:center"><h2>${L(CFG.welcome[0],CFG.welcome[1])}</h2>${langBtn()}</div><p class="muted">${L(CFG.welcome[2],CFG.welcome[3])}</p><label class="f">${L("Your name","你的名字")}</label><input id="n0" placeholder="${L("Your name","你的名字")}"><label class="f">${L("Goal date","目標日期")}</label><input id="g0" type="date" value="${S.goal}"><button class="btn" style="margin-top:14px" id="go">${L(CFG.goBtn[0],CFG.goBtn[1])}</button><p class="kb" style="margin-top:10px">${L("Already used this app on another device? After starting, go to Setup → Restore from sheet.","之前在別的裝置用過？開始後到「設定 → 從試算表還原」。")}</p></div>`;
+    $("#lgBtn").onclick=()=>{S.lang=S.lang==="zh"?"en":"zh";render();welcome()};
+    $("#go").onclick=()=>{S.name=$("#n0").value.trim()||L("Student","同學");S.goal=$("#g0").value||S.goal;save();$("#modal").classList.add("hidden");render()}};
+  welcome()}
+
+// ---------- automatic sync across devices (through the same Apps Script) ----------
+// Merge two packed progress states. Same code runs in the apps and in the Apps Script.
+// Per item: keep the record with more attempts (right + wrong); attempts only ever go up, so nothing learned is lost.
+// Settings: newer device wins. XP / best streak: max. Badges: union. Daily history: max per field.
+// A reset bumps "epoch"; a newer epoch replaces everything older.
+function mergePacked(a,b){if(!a)return b;if(!b)return a;
+  if((a.epoch||0)!==(b.epoch||0))return (a.epoch||0)>(b.epoch||0)?a:b;
+  var newer=(a.updated||0)>=(b.updated||0)?a:b,older=newer===a?b:a,o={},k;
+  for(k in older)o[k]=older[k];for(k in newer)o[k]=newer[k];
+  var m={};function put(r){var c=m[r[0]];if(!c){m[r[0]]=r;return}var ta=(c[3]||0)+(c[4]||0),tb=(r[3]||0)+(r[4]||0);if(tb>ta||(tb===ta&&(r[2]||0)>(c[2]||0)))m[r[0]]=r}
+  (older.W||[]).forEach(put);(newer.W||[]).forEach(put);o.W=Object.keys(m).map(function(x){return m[x]});
+  o.xp=Math.max(a.xp||0,b.xp||0);o.best=Math.max(a.best||0,b.best||0);
+  var st=(a.last||"")>=(b.last||"")?a:b;o.streak=st.streak||0;o.last=st.last||"";o.freezeUsed=st.freezeUsed||"";
+  var bs={};(a.badges||[]).concat(b.badges||[]).forEach(function(x){bs[x]=1});o.badges=Object.keys(bs);
+  o.hist={};[a.hist||{},b.hist||{}].forEach(function(h){Object.keys(h).forEach(function(d){var x=o.hist[d]||(o.hist[d]={});Object.keys(h[d]).forEach(function(f){x[f]=Math.max(x[f]||0,h[d][f]||0)})})});
+  if(a.check||b.check){o.check={};var ca=older.check||{},cb=newer.check||{};for(k in ca)o.check[k]=ca[k];for(k in cb)o.check[k]=cb[k]}
+  if(a.placed||b.placed)o.placed=true;
+  o.ik=(a.ik==="n"||b.ik==="n")?"n":(newer.ik||older.ik||"s");
+  o.updated=Math.max(a.updated||0,b.updated||0);return o}
+
+let syncBusy=false,lastSync=0,lastPush=0,syncErr=false;
+const appBusy=()=>(typeof inQuiz!=="undefined"&&inQuiz)||!!document.querySelector(".opt:not([disabled]),.kp");
+const decP=s=>JSON.parse(decodeURIComponent(escape(atob(String(s).slice(3)))));
+const encP=o=>"z1."+btoa(unescape(encodeURIComponent(JSON.stringify(o))));
+const LOCAL_ONLY=["reportUrl","token","pending"];
+function cleanForSync(o){o=Object.assign({},o);LOCAL_ONLY.forEach(k=>delete o[k]);let s=encP(o);if(s.length>48000){o.hist={};s=encP(o)}return s}
+function syncReady(){return !!(S.reportUrl&&S.name)}
+function syncStatus(){if(!syncReady())return _T("Off — add the sheet URL and your name to turn it on","未開啟：填入試算表網址和名字後就會自動同步");
+  return syncErr?_T("Last sync failed — will retry","上次同步失敗，稍後會自動重試"):lastSync?_T("On · last synced ","已開啟 · 上次同步 ")+new Date(lastSync).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):_T("On · waiting for first sync","已開啟 · 等待第一次同步")}
+function showSync(){const e=document.getElementById("syncSt");if(e)e.textContent=syncStatus()}
+function pushState(packedObj){if(!syncReady())return;lastPush=Date.now();
+  try{fetch(S.reportUrl,{method:"POST",mode:"no-cors",keepalive:true,headers:{"Content-Type":"text/plain"},
+    body:JSON.stringify({op:"sync",app:APPID,name:S.name,token:S.token||"",state:cleanForSync(packedObj||decP(packState(S)))})}).catch(()=>{})}catch(e){}}
+async function syncNow(push,manual){if(!syncReady()){if(manual)toast(_T("Add the sheet URL and your name first","請先填入試算表網址和名字"));return}
+  if(syncBusy||!navigator.onLine){if(manual&&!navigator.onLine)toast(_T("Offline — will sync later","目前離線，之後會自動同步"));return}
+  syncBusy=true;try{
+    const u=S.reportUrl+(S.reportUrl.includes("?")?"&":"?")+"op=pull&name="+encodeURIComponent(S.name)+"&app="+APPID+(S.token?"&token="+encodeURIComponent(S.token):"");
+    const j=await (await fetch(u)).json();if(j.error)throw new Error(j.error);
+    const local=decP(packState(S));let merged=local;
+    if(j.found&&j.state){const remote=decP(j.state);if(!remote.app||remote.app===APPID)merged=mergePacked(local,remote)}
+    const changed=JSON.stringify(merged.W)!==JSON.stringify(local.W)||merged.xp!==local.xp||merged.epoch!==local.epoch||merged.updated!==local.updated;
+    if(changed&&!appBusy()){const keep={};LOCAL_ONLY.forEach(k=>keep[k]=S[k]);S=Object.assign(fresh(),unpackState(encP(merged)),keep);
+      try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(typeof render==="function")render()}
+    if(push||changed||!j.found)pushState(merged);
+    lastSync=Date.now();syncErr=false;if(manual)toast(_T("Synced","已同步"))}
+  catch(e){syncErr=true;if(manual)toast(_T("Sync failed — check the URL and that the Apps Script is updated","同步失敗：請確認網址正確，以及 Apps Script 已更新並重新部署"))}
+  finally{syncBusy=false;showSync()}}
+{const _rep=report;report=function(){_rep();setTimeout(()=>syncNow(true),400)}}
+window.addEventListener("load",()=>setTimeout(()=>syncNow(true),800));
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")syncNow(false);else if(syncReady()&&(S.updated||0)>lastPush)pushState()});
+window.addEventListener("online",()=>syncNow(true));
+setInterval(()=>{if(document.visibilityState!=="visible")return;if(!lastSync||Date.now()-lastSync>5*60000)syncNow(false);else if((S.updated||0)>lastPush&&!appBusy())pushState()},45000);
 
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>{document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")r.update().catch(()=>{})})}).catch(()=>{});let reloaded=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(reloaded||inQuiz)return;reloaded=true;location.reload()})}
 </script>

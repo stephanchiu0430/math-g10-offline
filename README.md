@@ -39,3 +39,28 @@ Same as the other apps:
 - **Change `VERSION` at the top of `sw.js` on every release.** The installed version shows at the bottom of Setup.
 - Progress lives in `localStorage`. On iOS, deleting the home-screen icon deletes its progress — use **Setup → Export progress** first. Every parent-report row also includes a backup code.
 - Parent report: paste `apps-script.gs` into a Google Sheet's Apps Script, deploy as a web app (Execute as *Me*, access *Anyone*), and paste the `/exec` URL into **Setup → Parent report** on the student's device. Keep the URL private.
+
+## Restore from the sheet
+
+Every parent-report row now records which app it came from, and the backup code is compact (well under Google Sheets' 50,000-character cell limit, even with a full word list learned).
+
+To move progress to a new device: install the app, enter the same name, paste the sheet URL in **Setup → Parent report**, and tap **Restore from sheet**. The app fetches the latest backup for that name *in this app* and asks before replacing anything.
+
+This needs the updated `apps-script.gs`: paste it over the old script, then **Deploy → Manage deployments → edit → Version: New version → Deploy** (the URL stays the same). Optionally set `SECRET` at the top of the script and enter the same value as **Sheet password** in each app; then only apps that know it can write rows or read backups.
+
+## Language
+
+The whole app — menus, explanations, questions, and worked solutions — switches between **English and 繁體中文**. Use the 中文 / EN button on the Today, Skills, Plan and Stats screens, or **Setup → Language**. The choice is saved on the device; math notation is the same in both.
+
+## Sync across devices
+
+Progress now syncs automatically between every device that uses the same **name** and the same **sheet URL** (Setup → Parent report). A phone, a tablet and a laptop all end up with the same words/skills, review dates, XP, streak and badges.
+
+- **When it syncs:** when the app opens, after each finished session, when the app comes back to the foreground or goes to the background, when the device comes back online, and every few minutes while open. **Setup → Sync now** forces it; the status line under it shows the last sync time or the error.
+- **Nothing is lost when two devices are used offline.** For each item the version with more practice attempts wins, so learning only adds up. XP and best scores take the higher value, badges are combined, and the streak follows whichever device practised most recently.
+- **Mid-session safety:** progress from another device is never applied in the middle of a quiz; it is merged at the end.
+- **Reset** on one device resets every device (the reset is newer than the old progress). Export a backup first if unsure.
+- The server keeps one merged copy per name and app in a sheet tab called `sync`; parent-report rows still go to the first tab as before.
+- The sheet URL and password stay on each device only — they are never synced, never stored in the code, and should not be committed to the repository.
+
+This needs the updated `apps-script.gs`: paste it over the old script, then **Deploy → Manage deployments → edit → Version: New version → Deploy** (the URL stays the same). The first sync on each device merges whatever progress it already has, so existing progress is kept.
